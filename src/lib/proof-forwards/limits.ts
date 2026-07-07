@@ -1,0 +1,2 @@
+export const MAX_FORWARDS_PER_REQUEST = 3;
+export const MAX_FORWARDS_PER_USER_PER_DAY = 10;

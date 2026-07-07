@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none" role="img" aria-label="ProofPing">
+  <rect width="180" height="180" rx="40" fill="#0f6b57" />
+  <path
+    d="M90 36 53 56v34.4c0 24.8 17.4 47.8 37 54.2 19.6-6.4 37-29.4 37-54.2V56L90 36Z"
+    fill="#e8f4ef"
+  />
+  <path
+    d="m74.2 91.2-10.2-10.2 6.8-6.8 10.2 10.2 23.8-23.8 6.8 6.8-30.4 30.4Z"
+    fill="#0f6b57"
+  />
+</svg>

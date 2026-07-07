@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ProofPing
 
-## Getting Started
+ProofPing is a privacy-first real-human proof request platform for adults. It helps people request real-world confirmation for things AI cannot physically verify, such as listings, sellers, shops, addresses, queues, notices, and local situations.
 
-First, run the development server:
+This repo is being built one sprint at a time. See `PROJECT_BRIEF.md`, `ROADMAP.md`, and `CURRENT_SPRINT.md` before adding product features.
+
+## Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript strict mode
+- Tailwind CSS
+- PostgreSQL
+- Prisma 7
+- Zod
+- Vitest
+
+## Local Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create a local env file:
+
+```bash
+cp .env.example .env
+```
+
+Update `DATABASE_URL` if your local PostgreSQL credentials differ.
+
+Generate the Prisma client:
+
+```bash
+npm run prisma:generate
+```
+
+Apply database migrations:
+
+```bash
+npm run db:migrate
+```
+
+Run the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quality Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run prisma:validate
+```
 
-## Learn More
+## Local PostgreSQL
 
-To learn more about Next.js, take a look at the following resources:
+This repo is configured for a local Homebrew PostgreSQL database by default:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+DATABASE_URL="postgresql://proofping:proofping@localhost:5432/proofping?schema=public"
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+If the role and database do not exist yet:
 
-## Deploy on Vercel
+```bash
+psql -d postgres -c "CREATE ROLE proofping WITH LOGIN PASSWORD 'proofping';"
+psql -d postgres -c "CREATE DATABASE proofping OWNER proofping;"
+npm run db:migrate
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Self-Hosting Notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ProofPing is intended to be deployable on your own server instead of being Vercel-only.
+
+A simple starting deployment can use:
+
+- One VPS
+- Node.js running the Next.js app
+- PostgreSQL
+- nginx or Caddy as the reverse proxy
+- PM2 or Docker Compose as the process manager
+- Server-side environment variables for secrets
+
+Do not expose OpenAI, Stripe, email, storage, or database secrets to client components. Backend integrations should live behind route handlers and server-only modules.
+
+## Current Sprint
+
+Sprint 3 adds optional photo attachments with a 2+2 rule:
+
+- Up to 2 photos when creating a request.
+- Up to 2 photos on each reply.
+- JPEG, PNG, or WebP only. 8 MB per file.
+- `GET /api/evidence/[id]` serves files through the server.
+
+Auth is still a local demo placeholder for request creators. Public replies do not require login yet. Do not build payments, AI helpers, forwarding, admin, or moderation yet.
