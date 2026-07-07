@@ -15,13 +15,14 @@ export function LandingPage() {
           Can a real person check this for you?
         </h1>
 
-        <p className="mx-auto mt-4 max-w-md text-base leading-7 text-muted sm:text-lg">
-          Ask someone there before you send money. One link, real proof back.
+        <p className="mx-auto mt-4 max-w-lg text-base leading-7 text-muted sm:text-lg">
+          Before you send money to a stranger online, ask someone there. Share
+          one private link and get proof back in one place.
         </p>
 
-        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted">
-          <span className="font-semibold text-foreground">AI helps you ask clearly.</span>{" "}
-          Real people send the proof — AI does not check the place for you.
+        <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-muted">
+          Optional AI helps you write a clear question. A real person nearby
+          sends the proof.
         </p>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -40,7 +41,7 @@ export function LandingPage() {
         </div>
 
         <p className="mt-6 text-xs text-muted">
-          AI-assisted questions · Human proof · Free to ask
+          Human proof · AI-assisted questions · Free to ask
         </p>
       </section>
 
