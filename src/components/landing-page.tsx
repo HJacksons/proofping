@@ -19,6 +19,11 @@ export function LandingPage() {
           Ask someone there before you send money. One link, real proof back.
         </p>
 
+        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted">
+          <span className="font-semibold text-foreground">AI helps you ask clearly.</span>{" "}
+          Real people send the proof — AI does not check the place for you.
+        </p>
+
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             className="inline-flex h-11 w-full max-w-xs items-center justify-center rounded-md bg-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-accent-strong hover:text-white sm:w-auto"
@@ -35,7 +40,7 @@ export function LandingPage() {
         </div>
 
         <p className="mt-6 text-xs text-muted">
-          Not social media · Free to ask · No app for helpers
+          AI-assisted questions · Human proof · Free to ask
         </p>
       </section>
 

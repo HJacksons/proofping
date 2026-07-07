@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ProofPing — Verify before you pay",
   description:
-    "Get real human proof before you pay, sign, or trust something online. A verification tool — not social media.",
+    "Get real human proof before you pay. AI helps you ask clearly; real people there send the proof.",
 };
 
 export default async function RootLayout({

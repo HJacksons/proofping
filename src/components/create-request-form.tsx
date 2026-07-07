@@ -191,25 +191,36 @@ export function CreateRequestForm({
         />
       </label>
 
-      {aiImproveEnabled ? (
-        <div className="grid gap-1">
-          <button
-            className="inline-flex w-fit text-sm font-semibold text-accent-strong hover:underline disabled:opacity-60"
-            disabled={improving || state.status === "submitting"}
-            onClick={() => {
-              void handleImproveWording();
-            }}
-            type="button"
-          >
-            {improving ? "Improving..." : "Improve wording"}
-          </button>
-          {improveError ? (
-            <p className="text-sm text-amber-800" role="alert">
-              {improveError}
-            </p>
-          ) : null}
-        </div>
-      ) : null}
+      <div className="rounded-md border border-line bg-background px-4 py-3">
+        <p className="text-sm font-semibold">Optional AI assist</p>
+        <p className="mt-1 text-sm leading-6 text-muted">
+          AI can suggest clearer wording for your question. You review everything
+          before posting. Replies still come from real people, not AI.
+        </p>
+        {aiImproveEnabled ? (
+          <div className="mt-3">
+            <button
+              className="inline-flex w-fit rounded-md border border-line bg-surface px-3 py-2 text-sm font-semibold text-accent-strong transition hover:bg-accent-soft disabled:opacity-60"
+              disabled={improving || state.status === "submitting"}
+              onClick={() => {
+                void handleImproveWording();
+              }}
+              type="button"
+            >
+              {improving ? "Improving with AI..." : "Improve with AI"}
+            </button>
+            {improveError ? (
+              <p className="mt-2 text-sm text-amber-800" role="alert">
+                {improveError}
+              </p>
+            ) : null}
+          </div>
+        ) : (
+          <p className="mt-2 text-xs text-muted">
+            AI wording help is not available in this environment right now.
+          </p>
+        )}
+      </div>
 
       <label className="grid gap-1.5">
         <span className="text-sm font-semibold">Where?</span>

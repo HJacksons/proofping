@@ -16,7 +16,7 @@ describe("Home", () => {
     expect(screen.getByRole("link", { name: "Ask for proof" })).toBeDefined();
     expect(screen.getByRole("link", { name: "My requests" })).toBeDefined();
     expect(
-      screen.getByText(/Not social media/i),
+      screen.getByText(/AI helps you ask clearly/i),
     ).toBeDefined();
   });
 });

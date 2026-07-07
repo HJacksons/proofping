@@ -24,7 +24,8 @@ export default async function NewProofRequestPage() {
           What do you need checked?
         </h1>
         <p className="text-sm leading-6 text-muted">
-          One question is enough. Share the link right after.
+          One question is enough. Optional AI can polish your wording — proof
+          still comes from real people.
         </p>
       </div>
 
