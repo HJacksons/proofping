@@ -81,17 +81,17 @@ docker exec childsafe-caddy caddy reload --config /etc/caddy/Caddyfile
 Production needs at least:
 
 ```env
-POSTGRES_USER="proofping"
-POSTGRES_PASSWORD="replace-with-a-strong-db-password"
-POSTGRES_DB="proofping"
-DATABASE_URL="postgresql://proofping:replace-with-a-strong-db-password@postgres:5432/proofping?schema=public"
-APP_URL="https://getproofping.com"
-ENABLE_DEMO_AUTH="false"
-AUTH_SECRET="replace-with-a-long-random-secret-at-least-32-characters"
-AUTH_LINK_DELIVERY="email"
-ADMIN_EMAIL="your-admin-email@example.com"
-RESEND_API_KEY="re_..."
-EMAIL_FROM="ProofPing <hello@getproofping.com>"
+POSTGRES_USER=proofping
+POSTGRES_PASSWORD=replace-with-a-strong-db-password
+POSTGRES_DB=proofping
+DATABASE_URL=postgresql://proofping:replace-with-a-strong-db-password@postgres:5432/proofping?schema=public
+APP_URL=https://getproofping.com
+ENABLE_DEMO_AUTH=false
+AUTH_SECRET=replace-with-a-long-random-secret-at-least-32-characters
+AUTH_LINK_DELIVERY=email
+ADMIN_EMAIL=your-admin-email@example.com
+RESEND_API_KEY=re_...
+EMAIL_FROM=ProofPing <hello@getproofping.com>
 ```
 
 Stripe and OpenAI are optional. If missing, the app shows disabled states.
