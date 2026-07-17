@@ -4,7 +4,7 @@ WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV APP_URL="https://getproofping.com"
-ENV DATABASE_URL="postgresql://proofping:proofping@postgres:5432/proofping?schema=public"
+ENV DATABASE_URL="postgresql://proofping:proofping@proofping-postgres:5432/proofping?schema=public"
 ENV AUTH_SECRET="build-only-auth-secret-replace-in-production"
 
 RUN apt-get update && apt-get install -y openssl ca-certificates \
