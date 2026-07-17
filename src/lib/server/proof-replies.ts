@@ -8,6 +8,7 @@ import { ProofRequestNotOpenForRepliesError } from "@/lib/proof-requests/errors"
 import { InvalidReplyCapabilityTokenError } from "@/lib/proof-requests/errors";
 import { canAcceptReplies } from "@/lib/proof-requests/status";
 import { verifyReplyCapabilityToken } from "@/lib/proof-requests/reply-token";
+import { canReplyThroughDiscovery } from "@/lib/proof-requests/visibility";
 import {
   paginateByCursor,
   REPLIES_PAGE_SIZE,
@@ -59,6 +60,7 @@ export async function createProofReply(
       id: true,
       creatorId: true,
       status: true,
+      visibility: true,
     },
   });
 
@@ -70,7 +72,10 @@ export async function createProofReply(
     throw new ProofRequestNotOpenForRepliesError();
   }
 
-  if (!replyToken || !verifyReplyCapabilityToken(requestId, replyToken)) {
+  const hasValidReplyToken =
+    Boolean(replyToken) && verifyReplyCapabilityToken(requestId, replyToken ?? "");
+
+  if (!hasValidReplyToken && !canReplyThroughDiscovery(request)) {
     throw new InvalidReplyCapabilityTokenError();
   }
 

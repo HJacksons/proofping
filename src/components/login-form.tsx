@@ -20,6 +20,7 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const [state, setState] = useState<LoginState>(initialState);
   const initialError = searchParams.get("error");
+  const nextPath = getSafeNextPath(searchParams.get("next"));
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -36,6 +37,7 @@ export function LoginForm() {
       body: JSON.stringify({
         email: formData.get("email"),
         isAdultVerified: formData.get("isAdultVerified") === "on",
+        next: nextPath,
       }),
     });
     const payload = await response.json();
@@ -139,4 +141,12 @@ export function LoginForm() {
       </p>
     </form>
   );
+}
+
+function getSafeNextPath(next: string | null) {
+  if (!next?.startsWith("/") || next.startsWith("//")) {
+    return null;
+  }
+
+  return next;
 }

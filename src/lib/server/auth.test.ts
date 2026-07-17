@@ -1,13 +1,32 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { demoAuthUser, getCurrentUser, requireCurrentUser } from "@/lib/server/auth";
-
-describe("auth placeholder", () => {
-  it("uses the local demo user while Sprint 1 auth is a placeholder", async () => {
-    await expect(getCurrentUser()).resolves.toEqual(demoAuthUser);
+describe("auth", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
   });
 
-  it("allows server code to require the demo user in local development", async () => {
-    await expect(requireCurrentUser()).resolves.toEqual(demoAuthUser);
+  it("uses an explicitly configured demo user when demo auth is enabled", async () => {
+    vi.stubEnv("ENABLE_DEMO_AUTH", "true");
+    vi.stubEnv("DEMO_AUTH_EMAIL", "owner@example.test");
+
+    const { getCurrentUser, requireCurrentUser } = await import("@/lib/server/auth");
+    const expectedUser = {
+      id: "demo:owner@example.test",
+      email: "owner@example.test",
+      isAdultVerified: true,
+    };
+
+    await expect(getCurrentUser()).resolves.toEqual(expectedUser);
+    await expect(requireCurrentUser()).resolves.toEqual(expectedUser);
+  });
+
+  it("does not activate demo auth without a configured demo email", async () => {
+    vi.stubEnv("ENABLE_DEMO_AUTH", "true");
+    vi.stubEnv("DEMO_AUTH_EMAIL", "");
+
+    const { isDemoAuthActive } = await import("@/lib/server/auth");
+
+    expect(isDemoAuthActive()).toBe(false);
   });
 });

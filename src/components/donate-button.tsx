@@ -4,6 +4,7 @@ import { useState } from "react";
 
 type DonateButtonProps = {
   enabled: boolean;
+  showWhenDisabled?: boolean;
 };
 
 function HeartIcon() {
@@ -14,7 +15,7 @@ function HeartIcon() {
   );
 }
 
-export function DonateButton({ enabled }: DonateButtonProps) {
+export function DonateButton({ enabled, showWhenDisabled = false }: DonateButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,16 +46,22 @@ export function DonateButton({ enabled }: DonateButtonProps) {
     }
   }
 
-  if (!enabled) {
+  if (!enabled && !showWhenDisabled) {
     return null;
   }
 
   return (
     <div className="grid gap-1">
       <button
-        className="inline-flex h-9 items-center gap-1.5 rounded-md border border-line bg-background px-3.5 text-sm font-semibold text-foreground transition hover:border-accent hover:text-accent-strong disabled:opacity-60"
+        className="inline-flex h-9 items-center gap-1.5 rounded-md border border-line bg-background px-3.5 text-sm font-semibold text-foreground transition hover:border-accent hover:text-accent-strong disabled:opacity-60 aria-disabled:cursor-not-allowed aria-disabled:opacity-60"
+        aria-disabled={!enabled}
         disabled={loading}
         onClick={() => {
+          if (!enabled) {
+            setError("Donations are not available yet.");
+            return;
+          }
+
           void startDonation();
         }}
         type="button"
@@ -62,6 +69,11 @@ export function DonateButton({ enabled }: DonateButtonProps) {
         <HeartIcon />
         {loading ? "Opening..." : "Donate"}
       </button>
+      {!enabled && !error ? (
+        <p className="text-xs text-muted" role="status">
+          Donations are not available yet.
+        </p>
+      ) : null}
       {error ? (
         <p className="text-xs text-amber-800" role="alert">
           {error}

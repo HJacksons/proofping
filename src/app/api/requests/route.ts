@@ -46,6 +46,7 @@ export async function POST(request: Request) {
         category: formData.get("category"),
         locationHint: formData.get("locationHint"),
         listingUrl: formData.get("listingUrl"),
+        visibility: formData.get("visibility"),
       });
       const proofRequest = await createProofRequest(
         input,

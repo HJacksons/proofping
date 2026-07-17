@@ -10,8 +10,13 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const token = new URL(request.url).searchParams.get("token");
+  const requestUrl = new URL(request.url);
+  const token = requestUrl.searchParams.get("token");
+  const nextPath = getSafeNextPath(requestUrl.searchParams.get("next"));
   const loginUrl = new URL("/login", env.APP_URL);
+  if (nextPath) {
+    loginUrl.searchParams.set("next", nextPath);
+  }
 
   if (!token) {
     loginUrl.searchParams.set("error", "missing-token");
@@ -26,8 +31,8 @@ export async function GET(request: Request) {
   }
 
   const session = await createAuthSession(user.id);
-  const dashboardUrl = new URL("/dashboard", env.APP_URL);
-  const response = NextResponse.redirect(dashboardUrl);
+  const redirectUrl = new URL(nextPath ?? "/dashboard", env.APP_URL);
+  const response = NextResponse.redirect(redirectUrl);
 
   response.cookies.set(SESSION_COOKIE_NAME, session.sessionToken, {
     httpOnly: true,
@@ -38,4 +43,12 @@ export async function GET(request: Request) {
   });
 
   return response;
+}
+
+function getSafeNextPath(next: string | null) {
+  if (!next?.startsWith("/") || next.startsWith("//")) {
+    return null;
+  }
+
+  return next;
 }

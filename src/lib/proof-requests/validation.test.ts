@@ -17,7 +17,32 @@ describe("createProofRequestSchema", () => {
       category: "APARTMENT_LISTING",
       locationHint: "Denver, CO",
       listingUrl: null,
+      visibility: "PRIVATE_LINK",
     });
+  });
+
+  it("accepts local discovery when a location is provided", () => {
+    const parsed = createProofRequestSchema.parse({
+      title: "Can someone check this shop?",
+      body: "I need a local person to confirm whether this shop exists before I pay.",
+      category: "SELLER_OR_SHOP",
+      locationHint: "Kampala",
+      visibility: "LOCAL_DISCOVERY",
+    });
+
+    expect(parsed.visibility).toBe("LOCAL_DISCOVERY");
+    expect(parsed.locationHint).toBe("Kampala");
+  });
+
+  it("requires a location for local discovery", () => {
+    const result = createProofRequestSchema.safeParse({
+      title: "Can someone check this shop?",
+      body: "I need a local person to confirm whether this shop exists before I pay.",
+      category: "SELLER_OR_SHOP",
+      visibility: "LOCAL_DISCOVERY",
+    });
+
+    expect(result.success).toBe(false);
   });
 
   it("accepts an optional listing URL", () => {

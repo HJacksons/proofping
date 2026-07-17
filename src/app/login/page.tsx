@@ -4,15 +4,21 @@ import { Suspense } from "react";
 import { LoginForm } from "@/components/login-form";
 import { SiteShell } from "@/components/site-shell";
 import { env } from "@/lib/env";
-import { getCurrentUser } from "@/lib/server/auth";
+import { getCurrentUser, isDemoAuthActive } from "@/lib/server/auth";
 
 export const dynamic = "force-dynamic";
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
   const user = await getCurrentUser();
+  const { next } = await searchParams;
+  const isAskingForProof = next === "/requests/new";
 
   if (user) {
-    redirect("/dashboard");
+    redirect(getSafeNextPath(next) ?? "/dashboard");
   }
 
   return (
@@ -21,11 +27,12 @@ export default async function LoginPage() {
         <div className="text-center">
           <p className="text-sm font-medium text-accent-strong">Sign in</p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-            Manage your requests
+            {isAskingForProof ? "Sign in to ask for proof" : "Manage your requests"}
           </h1>
           <p className="mt-3 text-base leading-7 text-muted">
-            We&apos;ll email you a one-time link. Helpers reply without an
-            account.
+            {isAskingForProof
+              ? "We need an email so your proof request has an owner. Helpers can still reply without an account."
+              : "We'll email you a one-time link. Helpers reply without an account."}
           </p>
         </div>
 
@@ -35,7 +42,7 @@ export default async function LoginPage() {
           </Suspense>
         </div>
 
-        {env.ENABLE_DEMO_AUTH ? (
+        {isDemoAuthActive() ? (
           <p className="mt-6 text-center text-xs leading-5 text-muted">
             Demo auth is on locally — dashboard works without signing in.
           </p>
@@ -47,4 +54,12 @@ export default async function LoginPage() {
       </div>
     </SiteShell>
   );
+}
+
+function getSafeNextPath(next?: string) {
+  if (!next?.startsWith("/") || next.startsWith("//")) {
+    return null;
+  }
+
+  return next;
 }

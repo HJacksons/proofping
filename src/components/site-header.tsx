@@ -1,6 +1,5 @@
 import { SiteHeaderNav } from "@/components/site-header-nav";
-import { env } from "@/lib/env";
-import { getCurrentUser } from "@/lib/server/auth";
+import { getCurrentUser, isDemoAuthActive } from "@/lib/server/auth";
 import { getAdminNavVisible } from "@/lib/server/admin";
 import { getIntegrationAvailability } from "@/lib/server/integrations";
 
@@ -12,7 +11,7 @@ export async function SiteHeader() {
   return (
     <SiteHeaderNav
       donationsEnabled={integrations.donations}
-      isDemoAuth={env.ENABLE_DEMO_AUTH}
+      isDemoAuth={isDemoAuthActive()}
       showAdminLink={showAdminLink}
       userEmail={user?.email ?? null}
     />

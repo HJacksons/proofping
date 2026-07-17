@@ -17,6 +17,10 @@ import { SiteShell } from "@/components/site-shell";
 import { getProofRequestCategoryLabel } from "@/lib/proof-requests/categories";
 import { verifyReplyCapabilityToken } from "@/lib/proof-requests/reply-token";
 import { canAcceptReplies, getProofRequestStatusLabel } from "@/lib/proof-requests/status";
+import {
+  canReplyThroughDiscovery,
+  getProofRequestVisibilityLabel,
+} from "@/lib/proof-requests/visibility";
 import { ReplyList } from "@/components/reply-list";
 import { UrgentBoostButton } from "@/components/urgent-boost-button";
 import { getPublicProofRequest } from "@/lib/server/proof-requests";
@@ -80,6 +84,11 @@ export default async function PublicProofRequestPage({
   const hasValidReplyToken = replyToken
     ? verifyReplyCapabilityToken(id, replyToken)
     : false;
+  const canReplyFromDiscovery = canReplyThroughDiscovery(request);
+  const canShowReplyForm =
+    !request.isOwner &&
+    acceptsReplies &&
+    (hasValidReplyToken || canReplyFromDiscovery);
   const helperShareUrl = request.replyShareUrl ?? null;
 
   return (
@@ -97,6 +106,7 @@ export default async function PublicProofRequestPage({
             <p className="text-sm text-muted">
               {request.locationHint ? `${request.locationHint} · ` : null}
               <ProofTimestamp value={request.createdAt} />
+              {` · ${getProofRequestVisibilityLabel(request.visibility)}`}
               {request.status !== "OPEN"
                 ? ` · ${getProofRequestStatusLabel(request.status)}`
                 : null}
@@ -172,17 +182,19 @@ export default async function PublicProofRequestPage({
         ) : null}
       </FeedCard>
 
-      {!request.isOwner && acceptsReplies && hasValidReplyToken && replyToken ? (
+      {canShowReplyForm ? (
         <FeedCard>
           <FeedCardBody>
             <h2 className="text-base font-semibold">Your answer</h2>
             <p className="mt-1 text-sm text-muted">
-              Share what you know. One tap is enough.
+              {canReplyFromDiscovery
+                ? "If you know this place or situation, your local knowledge can protect someone."
+                : "Share what you know. One tap is enough."}
             </p>
             <div className="mt-4">
               <CreateReplyForm
                 hasRequestEvidence={hasRequestEvidence || hasListingUrl}
-                replyToken={replyToken}
+                replyToken={hasValidReplyToken ? replyToken : undefined}
                 requestId={request.id}
               />
             </div>

@@ -38,18 +38,18 @@ const initialState: ReplySubmitState = {
 
 const quickPickClass = (isSelected: boolean, verdict: string) => {
   if (!isSelected) {
-    return "rounded-md px-3 py-2 text-left text-sm font-semibold text-muted transition hover:bg-foreground/5 hover:text-foreground";
+    return "grid gap-2 rounded-md border border-line bg-background px-3 py-3 text-left text-sm font-semibold text-muted transition hover:border-accent/30 hover:bg-accent-soft hover:text-foreground";
   }
 
   if (verdict === "CONFIRMED") {
-    return "rounded-md bg-accent-soft px-3 py-2 text-left text-sm font-semibold text-accent-strong";
+    return "grid gap-2 rounded-md border border-accent/30 bg-accent-soft px-3 py-3 text-left text-sm font-semibold text-accent-strong";
   }
 
   if (verdict === "SUSPICIOUS") {
-    return "rounded-md bg-warn-soft px-3 py-2 text-left text-sm font-semibold text-amber-900";
+    return "grid gap-2 rounded-md border border-amber-200 bg-warn-soft px-3 py-3 text-left text-sm font-semibold text-amber-900";
   }
 
-  return "rounded-md bg-foreground/5 px-3 py-2 text-left text-sm font-semibold text-foreground";
+  return "grid gap-2 rounded-md border border-line bg-foreground/5 px-3 py-3 text-left text-sm font-semibold text-foreground";
 };
 
 export function CreateReplyForm({
@@ -58,7 +58,7 @@ export function CreateReplyForm({
   hasRequestEvidence = true,
 }: {
   requestId: string;
-  replyToken: string;
+  replyToken?: string;
   hasRequestEvidence?: boolean;
 }) {
   const [state, setState] = useState<ReplySubmitState>(initialState);
@@ -104,7 +104,9 @@ export function CreateReplyForm({
     const formData = new FormData();
     formData.set("verdict", payload.verdict);
     formData.set("body", payload.body);
-    formData.set("replyToken", replyToken);
+    if (replyToken) {
+      formData.set("replyToken", replyToken);
+    }
     attachments.forEach((file) => {
       formData.append("attachments", file);
     });
@@ -138,7 +140,7 @@ export function CreateReplyForm({
     router.refresh();
     setState({
       status: "success",
-      message: "Thanks — your reply was added.",
+      message: "Proof added — the result card just got stronger.",
     });
   }
 
@@ -149,7 +151,8 @@ export function CreateReplyForm({
           <div className="grid gap-2">
             <span className="text-sm font-semibold">Your answer</span>
             <span className="text-sm text-muted">
-              Pick the closest match, or write your own below.
+              Takes about 20 seconds. Pick the closest signal, add a note only if
+              it helps.
             </span>
           </div>
 
@@ -164,7 +167,10 @@ export function CreateReplyForm({
                   onClick={() => setSelectedEvidenceId(option.id)}
                   type="button"
                 >
-                  {option.label}
+                  <span className={verdictPillClass(option.verdict)}>
+                    {verdictShortLabels[option.verdict]}
+                  </span>
+                  <span>{option.label}</span>
                 </button>
               );
             })}
@@ -241,7 +247,7 @@ export function CreateReplyForm({
           }
           type="submit"
         >
-          {state.status === "submitting" ? "Sending..." : "Send reply"}
+          {state.status === "submitting" ? "Sending..." : "Send quick proof"}
         </button>
 
         <button
@@ -264,4 +270,22 @@ export function CreateReplyForm({
       ) : null}
     </form>
   );
+}
+
+const verdictShortLabels = {
+  CONFIRMED: "Confirm",
+  SUSPICIOUS: "Flag",
+  UNSURE: "Unsure",
+} as const;
+
+function verdictPillClass(verdict: string) {
+  if (verdict === "CONFIRMED") {
+    return "w-fit rounded-full bg-surface px-2 py-0.5 text-[11px] font-semibold text-accent-strong";
+  }
+
+  if (verdict === "SUSPICIOUS") {
+    return "w-fit rounded-full bg-surface px-2 py-0.5 text-[11px] font-semibold text-amber-900";
+  }
+
+  return "w-fit rounded-full bg-surface px-2 py-0.5 text-[11px] font-semibold text-muted";
 }

@@ -15,6 +15,11 @@ const requestMagicLinkSchema = z.object({
   isAdultVerified: z.boolean().refine((value) => value, {
     message: "Please agree to the Terms to continue.",
   }),
+  next: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((value) => getSafeNextPath(value)),
 });
 
 export const dynamic = "force-dynamic";
@@ -27,6 +32,9 @@ export async function POST(request: Request) {
     const verifyUrl = new URL("/auth/verify", env.APP_URL);
 
     verifyUrl.searchParams.set("token", magicLink.token);
+    if (input.next) {
+      verifyUrl.searchParams.set("next", input.next);
+    }
     await deliverMagicLink(magicLink.email, verifyUrl.toString());
 
     return Response.json({
@@ -59,4 +67,12 @@ export async function POST(request: Request) {
 
     return Response.json({ error: "Unable to send sign-in link." }, { status: 500 });
   }
+}
+
+function getSafeNextPath(next?: string | null) {
+  if (!next?.startsWith("/") || next.startsWith("//")) {
+    return null;
+  }
+
+  return next;
 }

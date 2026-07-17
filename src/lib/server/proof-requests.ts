@@ -43,6 +43,7 @@ export type ProofRequestDTO = {
   category: string;
   locationHint: string | null;
   listingUrl: string | null;
+  visibility: string;
   status: string;
   createdAt: string;
   updatedAt: string;
@@ -63,6 +64,12 @@ export type PublicProofRequestDTO = ProofRequestDTO & {
 type ListOwnProofRequestsOptions = {
   limit?: number;
   cursor?: string | null;
+};
+
+type ListDiscoverableProofRequestsOptions = {
+  limit?: number;
+  cursor?: string | null;
+  location?: string | null;
 };
 
 type GetPublicProofRequestOptions = {
@@ -94,6 +101,7 @@ function toProofRequestDTO(
     category: request.category,
     locationHint: request.locationHint,
     listingUrl: request.listingUrl,
+    visibility: request.visibility,
     status: request.status,
     createdAt: request.createdAt.toISOString(),
     updatedAt: request.updatedAt.toISOString(),
@@ -136,6 +144,7 @@ export async function createProofRequest(
       category: input.category,
       locationHint: input.locationHint,
       listingUrl: input.listingUrl,
+      visibility: input.visibility,
     },
     include: {
       evidence: requestEvidenceInclude,
@@ -219,6 +228,81 @@ export async function listOwnProofRequests(
     ),
   };
 }
+
+export async function listDiscoverableProofRequests(
+  options: ListDiscoverableProofRequestsOptions = {},
+): Promise<PaginatedResult<ProofRequestDTO>> {
+  const authUser = await getCurrentUser();
+  const viewerUserId = authUser?.id ?? null;
+  const limit = options.limit ?? DASHBOARD_REQUESTS_PAGE_SIZE;
+  const cursor = options.cursor ?? undefined;
+  const location = options.location?.trim();
+
+  const requests = await prisma.proofRequest.findMany({
+    where: {
+      visibility: "LOCAL_DISCOVERY",
+      status: {
+        in: ["OPEN", "UNRESOLVED", "SUSPICIOUS"],
+      },
+      ...(location
+        ? {
+            locationHint: {
+              contains: location,
+              mode: "insensitive",
+            },
+          }
+        : {}),
+    },
+    include: {
+      evidence: requestEvidenceInclude,
+    },
+    orderBy: [
+      { urgentBoostPaidAt: { sort: "desc", nulls: "last" } },
+      { createdAt: "desc" },
+      { id: "desc" },
+    ],
+    take: limit + 1,
+    ...(cursor
+      ? {
+          skip: 1,
+          cursor: {
+            id: cursor,
+          },
+        }
+      : {}),
+  });
+
+  const page = paginateByCursor(requests, limit);
+  const requestIds = page.items.map((request) => request.id);
+  const summaryGroups =
+    requestIds.length > 0
+      ? await prisma.proofReply.groupBy({
+          by: ["requestId", "verdict"],
+          where: {
+            requestId: {
+              in: requestIds,
+            },
+          },
+          _count: {
+            _all: true,
+          },
+        })
+      : [];
+  const summariesByRequestId = buildReplySummariesByRequestId(summaryGroups);
+  const emptySummary = summarizeVerdictGroups([]);
+
+  return {
+    ...page,
+    items: page.items.map((request) =>
+      toProofRequestDTO(
+        request,
+        viewerUserId,
+        summariesByRequestId.get(request.id) ?? emptySummary,
+      ),
+    ),
+  };
+}
+
 
 export async function getPublicProofRequest(
   id: string,

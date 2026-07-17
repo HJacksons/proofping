@@ -27,6 +27,7 @@ enum ProofRequestStatus {
 
 enum ProofRequestVisibility {
   PRIVATE_LINK
+  LOCAL_DISCOVERY
 }
 
 enum ProofReplyVerdict {
@@ -110,6 +111,7 @@ model ProofRequest {
   payments        Payment[]
 
   @@index([creatorId, createdAt])
+  @@index([visibility, locationHint, createdAt])
 }
 
 model ProofRequestForward {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import Link from "next/link";
 
 import { AttachmentPicker } from "@/components/attachment-picker";
@@ -76,6 +76,8 @@ export function CreateRequestForm({
   const [showMore, setShowMore] = useState(false);
   const [improving, setImproving] = useState(false);
   const [improveError, setImproveError] = useState<string | null>(null);
+  const [showAiConfirm, setShowAiConfirm] = useState(false);
+  const titleFieldId = useId();
   const titleRef = useRef<HTMLInputElement>(null);
   const locationRef = useRef<HTMLInputElement>(null);
   const detailsRef = useRef<HTMLTextAreaElement>(null);
@@ -91,9 +93,11 @@ export function CreateRequestForm({
     const details = String(formData.get("details") ?? "").trim();
     const listingUrl = String(formData.get("listingUrl") ?? "").trim();
     const category = String(formData.get("category") ?? "OTHER");
+    const visibility = String(formData.get("visibility") ?? "PRIVATE_LINK");
 
     formData.set("body", buildRequestBody({ title, locationHint, details, listingUrl }));
     formData.set("category", category);
+    formData.set("visibility", visibility);
     attachments.forEach((file) => {
       formData.append("attachments", file);
     });
@@ -119,7 +123,7 @@ export function CreateRequestForm({
     setShowMore(false);
     setState({
       status: "success",
-      message: "Ready to share.",
+      message: "Share link ready — send it to someone local or someone who knows the seller.",
       requestId: payload.request.id,
       replyShareUrl: payload.request.replyShareUrl ?? null,
     });
@@ -176,12 +180,67 @@ export function CreateRequestForm({
     }
   }
 
+  function handleAiAssistClick() {
+    if (improving || state.status === "submitting") {
+      return;
+    }
+
+    if (!aiImproveEnabled) {
+      setImproveError("AI wording help is not available in this environment right now.");
+      return;
+    }
+
+    const title = titleRef.current?.value.trim() ?? "";
+
+    if (title.length < 8) {
+      setImproveError("Write your question first, then tap AI.");
+      return;
+    }
+
+    setShowAiConfirm(true);
+  }
+
+  function confirmAiImprove() {
+    setShowAiConfirm(false);
+    void handleImproveWording();
+  }
+
   return (
     <form className="grid gap-4" onSubmit={handleSubmit}>
-      <label className="grid gap-1.5">
-        <span className="text-sm font-semibold">Your question</span>
+      <div className="grid gap-3 rounded-md border border-line bg-background px-4 py-3 text-sm">
+        <p className="font-semibold">How ProofPing works</p>
+        <div className="grid gap-2 text-muted sm:grid-cols-3">
+          <p>
+            <span className="font-semibold text-foreground">1. Create</span> one clear check.
+          </p>
+          <p>
+            <span className="font-semibold text-foreground">2. Share</span> the helper link.
+          </p>
+          <p>
+            <span className="font-semibold text-foreground">3. Decide</span> from the proof card.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-1.5">
+        <div className="flex items-center justify-between gap-3">
+          <label className="text-sm font-semibold" htmlFor={titleFieldId}>
+            Your question
+          </label>
+          <button
+            aria-disabled={improving || state.status === "submitting"}
+            aria-label="Improve wording with AI"
+            className="inline-flex size-9 items-center justify-center rounded-md border border-line bg-background text-accent-strong transition hover:border-accent/40 hover:bg-accent-soft disabled:opacity-60 aria-disabled:opacity-60"
+            onClick={handleAiAssistClick}
+            title="Improve wording with AI"
+            type="button"
+          >
+            {improving ? <LoadingIcon /> : <AiIcon />}
+          </button>
+        </div>
         <input
           className="min-h-12 rounded-md border border-line bg-background px-4 text-base outline-none focus:border-accent"
+          id={titleFieldId}
           maxLength={120}
           minLength={8}
           name="title"
@@ -189,38 +248,55 @@ export function CreateRequestForm({
           ref={titleRef}
           required
         />
-      </label>
-
-      <div className="rounded-md border border-line bg-background px-4 py-3">
-        <p className="text-sm font-semibold">Optional AI assist</p>
-        <p className="mt-1 text-sm leading-6 text-muted">
-          AI can suggest clearer wording for your question. You review everything
-          before posting. Replies still come from real people, not AI.
-        </p>
-        {aiImproveEnabled ? (
-          <div className="mt-3">
-            <button
-              className="inline-flex w-fit rounded-md border border-line bg-surface px-3 py-2 text-sm font-semibold text-accent-strong transition hover:bg-accent-soft disabled:opacity-60"
-              disabled={improving || state.status === "submitting"}
-              onClick={() => {
-                void handleImproveWording();
-              }}
-              type="button"
-            >
-              {improving ? "Improving with AI..." : "Improve with AI"}
-            </button>
-            {improveError ? (
-              <p className="mt-2 text-sm text-amber-800" role="alert">
-                {improveError}
-              </p>
-            ) : null}
-          </div>
-        ) : (
-          <p className="mt-2 text-xs text-muted">
-            AI wording help is not available in this environment right now.
+        {improveError ? (
+          <p className="text-xs font-medium text-amber-800" role="alert">
+            {improveError}
           </p>
-        )}
+        ) : null}
       </div>
+
+      {showAiConfirm ? (
+        <div
+          aria-labelledby="ai-assist-title"
+          aria-modal="true"
+          className="fixed inset-0 z-50 grid place-items-center bg-foreground/25 px-4"
+          role="dialog"
+        >
+          <div className="w-full max-w-sm rounded-md border border-line bg-surface p-4 shadow-lg">
+            <div className="flex items-start gap-3">
+              <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md bg-accent-soft text-accent-strong">
+                <AiIcon />
+              </span>
+              <div>
+                <h2 className="text-base font-semibold" id="ai-assist-title">
+                  Improve wording with AI?
+                </h2>
+                <p className="mt-1 text-sm leading-6 text-muted">
+                  AI will only polish your question. You review the wording
+                  before posting, and replies still come from real people.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                className="rounded-md px-3 py-2 text-sm font-semibold text-muted hover:bg-foreground/5 hover:text-foreground"
+                onClick={() => setShowAiConfirm(false)}
+                type="button"
+              >
+                Keep as is
+              </button>
+              <button
+                className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-strong"
+                onClick={confirmAiImprove}
+                type="button"
+              >
+                Improve wording
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <label className="grid gap-1.5">
         <span className="text-sm font-semibold">Where?</span>
@@ -232,6 +308,42 @@ export function CreateRequestForm({
           ref={locationRef}
         />
       </label>
+
+      <fieldset className="grid gap-2">
+        <legend className="text-sm font-semibold">Who can help?</legend>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <label className="grid cursor-pointer gap-1 rounded-md border border-line bg-background px-4 py-3 text-sm has-[:checked]:border-accent/40 has-[:checked]:bg-accent-soft">
+            <span className="flex items-center gap-2 font-semibold">
+              <input
+                className="size-4 accent-[var(--accent)]"
+                defaultChecked
+                name="visibility"
+                type="radio"
+                value="PRIVATE_LINK"
+              />
+              Private link
+            </span>
+            <span className="leading-5 text-muted">
+              Only people with your helper link can reply.
+            </span>
+          </label>
+
+          <label className="grid cursor-pointer gap-1 rounded-md border border-line bg-background px-4 py-3 text-sm has-[:checked]:border-accent/40 has-[:checked]:bg-accent-soft">
+            <span className="flex items-center gap-2 font-semibold">
+              <input
+                className="size-4 accent-[var(--accent)]"
+                name="visibility"
+                type="radio"
+                value="LOCAL_DISCOVERY"
+              />
+              Help nearby
+            </span>
+            <span className="leading-5 text-muted">
+              People browsing your city or neighborhood can find and reply.
+            </span>
+          </label>
+        </div>
+      </fieldset>
 
       <label className="grid gap-1.5">
         <span className="text-sm font-semibold">Anything else?</span>
@@ -297,8 +409,13 @@ export function CreateRequestForm({
         disabled={state.status === "submitting"}
         type="submit"
       >
-        {state.status === "submitting" ? "Creating..." : "Create & share"}
+        {state.status === "submitting" ? "Creating..." : "Create helper link"}
       </button>
+
+      <p className="text-xs leading-5 text-muted">
+        Safety rule: ask for public, lawful checks only. Do not request stalking,
+        private identity data, harassment, or anything involving children.
+      </p>
 
       {state.message ? (
         <div
@@ -324,5 +441,51 @@ export function CreateRequestForm({
         </div>
       ) : null}
     </form>
+  );
+}
+
+function AiIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      <path d="M12 3 13.4 8.1 18 10l-4.6 1.9L12 17l-1.4-5.1L6 10l4.6-1.9L12 3Z" />
+      <path d="M19 15.5 19.7 18l2.3 1-2.3 1-.7 2.5-.7-2.5-2.3-1 2.3-1 .7-2.5Z" />
+      <path d="M4.5 14 5 15.7 6.5 16.4 5 17.1 4.5 18.8 4 17.1 2.5 16.4 4 15.7 4.5 14Z" />
+    </svg>
+  );
+}
+
+function LoadingIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4 animate-spin"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="9"
+        stroke="currentColor"
+        strokeWidth="3"
+      />
+      <path
+        className="opacity-75"
+        d="M21 12a9 9 0 0 0-9-9"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+    </svg>
   );
 }

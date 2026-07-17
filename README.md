@@ -30,6 +30,8 @@ cp .env.example .env
 ```
 
 Update `DATABASE_URL` if your local PostgreSQL credentials differ.
+The example uses `AUTH_LINK_DELIVERY="response"` so local magic links are returned
+by the sign-in API without requiring Resend.
 
 Generate the Prisma client:
 
@@ -93,11 +95,18 @@ Do not expose OpenAI, Stripe, email, storage, or database secrets to client comp
 
 ## Current Sprint
 
-Sprint 3 adds optional photo attachments with a 2+2 rule:
+Sprint 5 adds optional monetization and backend-only AI assistance:
 
-- Up to 2 photos when creating a request.
-- Up to 2 photos on each reply.
-- JPEG, PNG, or WebP only. 8 MB per file.
-- `GET /api/evidence/[id]` serves files through the server.
+- Stripe Checkout donation flow.
+- Stripe Checkout urgent boost flow for open requests.
+- Backend-only OpenAI wording helper.
+- Honest disabled states when keys are missing.
 
-Auth is still a local demo placeholder for request creators. Public replies do not require login yet. Do not build payments, AI helpers, forwarding, admin, or moderation yet.
+Auth uses email magic links when demo auth is off. Public helpers can reply through signed helper links.
+
+## Discovery Loop
+
+Requests are private by default. A requester can opt into `Help nearby`, which
+makes the request visible in the local discovery feed at `/requests`. Helpers
+can filter by city or neighborhood and reply without a private helper link only
+when the requester chose local discovery.

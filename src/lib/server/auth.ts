@@ -16,15 +16,9 @@ export type AuthUser = {
   isAdultVerified: boolean;
 };
 
-export const demoAuthUser: AuthUser = {
-  id: "demo-user",
-  email: "demo@proofping.local",
-  isAdultVerified: true,
-};
-
 export async function getCurrentUser(): Promise<AuthUser | null> {
-  if (env.ENABLE_DEMO_AUTH) {
-    return demoAuthUser;
+  if (isDemoAuthActive()) {
+    return getDemoAuthUser();
   }
 
   const cookieStore = await cookies();
@@ -72,11 +66,29 @@ export async function requireCurrentUser(): Promise<AuthUser> {
 }
 
 export async function bootstrapDemoUser() {
-  if (!env.ENABLE_DEMO_AUTH) {
+  if (!isDemoAuthActive()) {
     return;
   }
 
-  await ensureUserForAuth(demoAuthUser);
+  await ensureUserForAuth(getDemoAuthUser());
+}
+
+export function isDemoAuthActive() {
+  return Boolean(env.ENABLE_DEMO_AUTH && env.DEMO_AUTH_EMAIL);
+}
+
+function getDemoAuthUser(): AuthUser {
+  if (!env.DEMO_AUTH_EMAIL) {
+    throw new Error("DEMO_AUTH_EMAIL is required when ENABLE_DEMO_AUTH is true.");
+  }
+
+  const email = env.DEMO_AUTH_EMAIL.toLowerCase();
+
+  return {
+    id: `demo:${email}`,
+    email,
+    isAdultVerified: true,
+  };
 }
 
 export class AuthRequiredError extends Error {

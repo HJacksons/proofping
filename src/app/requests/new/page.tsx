@@ -12,7 +12,7 @@ export default async function NewProofRequestPage() {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/login?next=/requests/new");
   }
 
   const integrations = getIntegrationAvailability();
@@ -24,8 +24,8 @@ export default async function NewProofRequestPage() {
           What do you need checked?
         </h1>
         <p className="text-sm leading-6 text-muted">
-          One question is enough. Optional AI can polish your wording — proof
-          still comes from real people.
+          Create one private helper link. Send it to someone nearby, then use the
+          result card to decide before you pay.
         </p>
       </div>
 

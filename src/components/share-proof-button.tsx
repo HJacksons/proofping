@@ -147,13 +147,8 @@ export function ShareProofButton({
         onClose={() => setNote("")}
         ref={dialogRef}
       >
-        <form
-          className="grid gap-4 p-4"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void shareWithNote();
-          }}
-        >
+        {/* Use a div, not a form — this dialog is often rendered inside CreateRequestForm. */}
+        <div className="grid gap-4 p-4">
           <div className="grid gap-1">
             <h2 className="text-base font-semibold" id={dialogTitleId}>
               Share request
@@ -185,12 +180,15 @@ export function ShareProofButton({
             </button>
             <button
               className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-strong"
-              type="submit"
+              onClick={() => {
+                void shareWithNote();
+              }}
+              type="button"
             >
               Share
             </button>
           </div>
-        </form>
+        </div>
       </dialog>
     </>
   );

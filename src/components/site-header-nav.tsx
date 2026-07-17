@@ -64,10 +64,6 @@ export function SiteHeaderNav({
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     if (!menuOpen) {
       return;
     }
@@ -80,6 +76,11 @@ export function SiteHeaderNav({
   }, [menuOpen]);
 
   const links = [
+    {
+      href: "/requests",
+      label: "Help nearby",
+      isActive: pathname === "/requests",
+    },
     {
       href: "/dashboard",
       label: "My requests",

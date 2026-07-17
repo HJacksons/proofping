@@ -19,6 +19,8 @@ export type RequestListItem = {
   title: string;
   body: string;
   category: string;
+  locationHint: string | null;
+  visibility: string;
   status: string;
   createdAt: string;
   replyShareUrl: string | null;

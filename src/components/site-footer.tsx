@@ -23,6 +23,12 @@ export function SiteFooter({ donationsEnabled = false }: SiteFooterProps) {
           <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end sm:gap-4">
             <Link
               className="text-sm font-semibold text-muted hover:text-foreground"
+              href="/requests"
+            >
+              Help nearby
+            </Link>
+            <Link
+              className="text-sm font-semibold text-muted hover:text-foreground"
               href="/requests/new"
             >
               Ask for proof
@@ -33,7 +39,7 @@ export function SiteFooter({ donationsEnabled = false }: SiteFooterProps) {
             >
               My requests
             </Link>
-            <DonateButton enabled={donationsEnabled} />
+            <DonateButton enabled={donationsEnabled} showWhenDisabled />
           </div>
         </div>
 

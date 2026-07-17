@@ -7,8 +7,12 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
   ENABLE_DEMO_AUTH: z
     .enum(["true", "false"])
-    .default(process.env.NODE_ENV === "production" ? "false" : "true")
+    .default("false")
     .transform((value) => value === "true"),
+  DEMO_AUTH_EMAIL: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.email().optional(),
+  ),
   AUTH_SECRET: z
     .string()
     .min(32, "AUTH_SECRET must be at least 32 characters.")
@@ -28,6 +32,7 @@ export const env = envSchema.parse({
   APP_URL: process.env.APP_URL,
   DATABASE_URL: process.env.DATABASE_URL,
   ENABLE_DEMO_AUTH: process.env.ENABLE_DEMO_AUTH,
+  DEMO_AUTH_EMAIL: process.env.DEMO_AUTH_EMAIL,
   AUTH_SECRET: process.env.AUTH_SECRET,
   AUTH_LINK_DELIVERY: process.env.AUTH_LINK_DELIVERY,
   RESEND_API_KEY: process.env.RESEND_API_KEY,

@@ -10,7 +10,7 @@ describe("Home", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Can a real person check this for you?",
+        name: "Before you pay a stranger, get a real person to check.",
       }),
     ).toBeDefined();
     expect(screen.getByRole("link", { name: "Ask for proof" })).toBeDefined();
