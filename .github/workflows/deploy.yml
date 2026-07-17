@@ -88,7 +88,7 @@ jobs:
 
             echo "Waiting for app health..."
             for attempt in $(seq 1 30); do
-              if docker compose -f docker-compose.prod.yml exec -T app \
+              if docker compose -f docker-compose.prod.yml exec -T proofping \
                 node -e "fetch('http://127.0.0.1:3000/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))" < /dev/null; then
                 echo "Health check passed."
                 break
@@ -96,7 +96,7 @@ jobs:
 
               if [ "$attempt" -eq 30 ]; then
                 echo "Health check failed."
-                docker compose -f docker-compose.prod.yml logs --tail=120 app
+                docker compose -f docker-compose.prod.yml logs --tail=120 proofping
                 exit 1
               fi
 
