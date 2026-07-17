@@ -1,0 +1,7 @@
+getproofping.com {
+  reverse_proxy app:3000
+}
+
+www.getproofping.com {
+  redir https://getproofping.com{uri}
+}

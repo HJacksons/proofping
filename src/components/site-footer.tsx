@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BrandLockup } from "@/components/brand-lockup";
 import { DonateButton } from "@/components/donate-button";
 
 type SiteFooterProps = {
@@ -12,12 +13,11 @@ export function SiteFooter({ donationsEnabled = false }: SiteFooterProps) {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6 sm:px-6">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-md text-center sm:text-left">
-            <p className="text-sm font-semibold text-foreground">
-              Better than “I’ll just risk it.”
-            </p>
-            <p className="mt-1 text-sm leading-6 text-muted">
-              Ask a real person nearby before you send money to a stranger
-              online.
+            <div className="flex justify-center sm:justify-start">
+              <BrandLockup />
+            </div>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              Ask a real person nearby when something needs checking.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end sm:gap-4">

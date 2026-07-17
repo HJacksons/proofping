@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { BrandLockup } from "@/components/brand-lockup";
 import { DonateButton } from "@/components/donate-button";
 import { LogoutButton } from "@/components/logout-button";
 
@@ -106,10 +107,11 @@ export function SiteHeaderNav({
     <header className="sticky top-0 z-50 border-b border-line bg-surface/95 backdrop-blur">
       <div className="relative z-60 mx-auto flex w-full max-w-6xl items-center justify-between gap-4 bg-surface/95 px-4 py-2.5 sm:px-6">
         <Link
-          className="text-lg font-bold tracking-tight text-foreground"
+          aria-label="ProofPing home"
+          className="text-foreground"
           href="/"
         >
-          ProofPing
+          <BrandLockup compact />
         </Link>
 
         <nav

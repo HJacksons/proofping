@@ -1,0 +1,16 @@
+.git
+.github
+.next
+node_modules
+coverage
+storage
+src/generated/prisma
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+!.env.production.example
+npm-debug.log*
+Dockerfile
+docker-compose*.yml
+README.md

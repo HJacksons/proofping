@@ -93,6 +93,10 @@ A simple starting deployment can use:
 
 Do not expose OpenAI, Stripe, email, storage, or database secrets to client components. Backend integrations should live behind route handlers and server-only modules.
 
+Production deployment for `getproofping.com` is documented in
+`docs/deployment.md`. The repo includes Docker Compose, Caddy HTTPS, and a
+GitHub Actions workflow that deploys to a Hetzner server after pushes to `main`.
+
 ## Current Sprint
 
 Sprint 5 adds optional monetization and backend-only AI assistance:
