@@ -58,35 +58,37 @@ jobs:
 
     steps:
       - name: Verify deploy secrets
+        id: deploy_secrets
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
         run: |
-          missing=0
-          if [ -z "${{ secrets.SERVER_HOST }}" ]; then
-            echo "::error::Missing repository secret SERVER_HOST (server IPv4 or hostname)."
-            missing=1
+          if [ -z "$SERVER_HOST" ] || [ -z "$SERVER_USER" ] || [ -z "$SERVER_SSH_KEY" ]; then
+            echo "::warning::GitHub deploy skipped because SERVER_HOST, SERVER_USER, and SERVER_SSH_KEY are not all configured. The server-side autodeploy timer still pulls origin/main."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
-          if [ -z "${{ secrets.SERVER_USER }}" ]; then
-            echo "::error::Missing repository secret SERVER_USER (SSH username)."
-            missing=1
-          fi
-          if [ -z "${{ secrets.SERVER_SSH_KEY }}" ]; then
-            echo "::error::Missing repository secret SERVER_SSH_KEY (private deploy key)."
-            missing=1
-          fi
-          if [ "$missing" -ne 0 ]; then
-            echo "Add SERVER_HOST, SERVER_USER, and SERVER_SSH_KEY under Settings → Secrets and variables → Actions."
-            exit 1
-          fi
+          echo "ready=true" >> "$GITHUB_OUTPUT"
 
       - name: Add SSH key
+        if: steps.deploy_secrets.outputs.ready == 'true'
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/proofping_deploy_key
+          echo "$SERVER_SSH_KEY" > ~/.ssh/proofping_deploy_key
           chmod 600 ~/.ssh/proofping_deploy_key
-          ssh-keyscan -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts
 
       - name: Deploy on server
+        if: steps.deploy_secrets.outputs.ready == 'true'
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
-          ssh -i ~/.ssh/proofping_deploy_key "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" 'bash -s' <<'EOF'
+          ssh -i ~/.ssh/proofping_deploy_key "$SERVER_USER@$SERVER_HOST" 'bash -s' <<'EOF'
             set -euo pipefail
 
             APP_DIR="${PROOFPING_APP_DIR:-$HOME/apps/proofping}"

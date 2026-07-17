@@ -107,6 +107,9 @@ SERVER_SSH_KEY=<private deploy key>
 ```
 
 The server user must be able to run Docker and access `~/apps/proofping`.
+If these secrets are not configured, GitHub Actions still runs build checks but
+skips the deploy step; the server-side autodeploy timer can continue deploying
+from `origin/main`.
 
 ## Current Server Automation
 
