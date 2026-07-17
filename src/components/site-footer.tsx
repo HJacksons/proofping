@@ -9,24 +9,60 @@ type SiteFooterProps = {
 export function SiteFooter({ donationsEnabled = false }: SiteFooterProps) {
   return (
     <footer className="mt-auto border-t border-line bg-surface">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-4 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <p className="text-center text-sm text-muted sm:text-left">
-          AI helps you ask. Real humans prove what AI cannot check.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-          <Link className="text-sm font-semibold text-muted hover:text-foreground" href="/requests/new">
-            Ask for proof
-          </Link>
-          <Link className="text-sm font-semibold text-muted hover:text-foreground" href="/dashboard">
-            My requests
-          </Link>
-          <DonateButton enabled={donationsEnabled} />
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6 sm:px-6">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="max-w-md text-center sm:text-left">
+            <p className="text-sm font-semibold text-foreground">
+              Better than “I’ll just risk it.”
+            </p>
+            <p className="mt-1 text-sm leading-6 text-muted">
+              Ask a real person nearby before you send money to a stranger
+              online.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end sm:gap-4">
+            <Link
+              className="text-sm font-semibold text-muted hover:text-foreground"
+              href="/requests/new"
+            >
+              Ask for proof
+            </Link>
+            <Link
+              className="text-sm font-semibold text-muted hover:text-foreground"
+              href="/dashboard"
+            >
+              My requests
+            </Link>
+            <DonateButton enabled={donationsEnabled} />
+          </div>
         </div>
-      </div>
-      <div className="border-t border-line">
-        <p className="mx-auto max-w-6xl px-4 py-3 text-center text-xs text-muted sm:px-6">
-          Built for help, not surveillance.
-        </p>
+
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t border-line pt-4 sm:justify-between">
+          <nav
+            aria-label="About and policies"
+            className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2"
+          >
+            <Link
+              className="text-xs font-semibold text-muted hover:text-foreground"
+              href="/about"
+            >
+              About
+            </Link>
+            <Link
+              className="text-xs font-semibold text-muted hover:text-foreground"
+              href="/privacy"
+            >
+              Privacy
+            </Link>
+            <Link
+              className="text-xs font-semibold text-muted hover:text-foreground"
+              href="/terms"
+            >
+              Terms
+            </Link>
+          </nav>
+          <p className="text-xs text-muted">Built for help, not surveillance.</p>
+        </div>
       </div>
     </footer>
   );

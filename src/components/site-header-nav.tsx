@@ -4,12 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { DonateButton } from "@/components/donate-button";
 import { LogoutButton } from "@/components/logout-button";
 
 type SiteHeaderNavProps = {
   showAdminLink?: boolean;
   userEmail?: string | null;
   isDemoAuth?: boolean;
+  donationsEnabled?: boolean;
 };
 
 const navLinkClass = (isActive: boolean) =>
@@ -56,12 +58,21 @@ export function SiteHeaderNav({
   showAdminLink = false,
   userEmail = null,
   isDemoAuth = false,
+  donationsEnabled = false,
 }: SiteHeaderNavProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = "";
@@ -91,8 +102,8 @@ export function SiteHeaderNav({
   ];
 
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-surface/95 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-2.5 sm:px-6">
+    <header className="sticky top-0 z-50 border-b border-line bg-surface/95 backdrop-blur">
+      <div className="relative z-60 mx-auto flex w-full max-w-6xl items-center justify-between gap-4 bg-surface/95 px-4 py-2.5 sm:px-6">
         <Link
           className="text-lg font-bold tracking-tight text-foreground"
           href="/"
@@ -145,7 +156,7 @@ export function SiteHeaderNav({
           aria-controls="mobile-nav"
           aria-expanded={menuOpen}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
-          className="inline-flex size-10 items-center justify-center rounded-md text-foreground transition hover:bg-foreground/5 sm:hidden"
+          className="relative z-60 inline-flex size-11 items-center justify-center rounded-md text-foreground transition hover:bg-foreground/5 sm:hidden"
           onClick={() => setMenuOpen((current) => !current)}
           type="button"
         >
@@ -154,14 +165,14 @@ export function SiteHeaderNav({
       </div>
 
       {menuOpen ? (
-        <div className="fixed inset-0 top-[53px] z-10 sm:hidden" id="mobile-nav">
+        <div className="sm:hidden" id="mobile-nav">
           <button
             aria-label="Close menu"
-            className="absolute inset-0 bg-foreground/20"
+            className="fixed inset-0 z-40 bg-foreground/20"
             onClick={() => setMenuOpen(false)}
             type="button"
           />
-          <div className="relative border-t border-line bg-surface px-4 py-4 shadow-lg">
+          <div className="absolute inset-x-0 top-full z-50 border-b border-line bg-surface px-4 py-4 shadow-lg">
             <nav aria-label="Mobile navigation" className="grid gap-1">
               {links.map((link) => (
                 <Link
@@ -196,6 +207,15 @@ export function SiteHeaderNav({
                   Sign in
                 </Link>
               )}
+
+              {donationsEnabled ? (
+                <>
+                  <div className="my-2 border-t border-line" />
+                  <div className="px-1 [&_button]:flex [&_button]:min-h-11 [&_button]:w-full [&_button]:items-center [&_button]:justify-center">
+                    <DonateButton enabled={donationsEnabled} />
+                  </div>
+                </>
+              ) : null}
             </nav>
           </div>
         </div>

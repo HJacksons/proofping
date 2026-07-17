@@ -24,6 +24,21 @@ export default async function AdminHomePage() {
       <div className="grid gap-3">
         <FeedCard>
           <FeedCardBody>
+            <h2 className="text-lg font-semibold">Site visits</h2>
+            <p className="mt-1 text-sm leading-6 text-muted">
+              Anonymous page views and top paths. No IPs or emails stored.
+            </p>
+            <Link
+              className="mt-3 inline-flex text-sm font-semibold text-accent-strong hover:underline"
+              href="/admin/visits"
+            >
+              View visits
+            </Link>
+          </FeedCardBody>
+        </FeedCard>
+
+        <FeedCard>
+          <FeedCardBody>
             <h2 className="text-lg font-semibold">Payments</h2>
             <p className="mt-1 text-sm leading-6 text-muted">
               Donations and urgent boosts recorded from Stripe checkout.

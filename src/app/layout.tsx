@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { VisitTracker } from "@/components/visit-tracker";
 import { getIntegrationAvailability } from "@/lib/server/integrations";
 import "./globals.css";
 
@@ -35,6 +36,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
+        <VisitTracker />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter donationsEnabled={integrations.donations} />

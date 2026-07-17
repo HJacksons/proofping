@@ -13,7 +13,7 @@ import { env } from "@/lib/env";
 const requestMagicLinkSchema = z.object({
   email: z.email("Enter a valid email address."),
   isAdultVerified: z.boolean().refine((value) => value, {
-    message: "ProofPing is for adults only.",
+    message: "Please agree to the Terms to continue.",
   }),
 });
 

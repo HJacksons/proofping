@@ -92,7 +92,13 @@ export function LoginForm() {
           required
           type="checkbox"
         />
-        <span>I confirm I am 18 or older and will use ProofPing lawfully.</span>
+        <span>
+          I agree to the{" "}
+          <Link className="font-semibold text-accent-strong hover:underline" href="/terms">
+            Terms
+          </Link>{" "}
+          and will use ProofPing lawfully.
+        </span>
       </label>
 
       <button
