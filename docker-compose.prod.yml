@@ -26,25 +26,17 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - default
+      - proxy
     expose:
       - "3000"
-
-  caddy:
-    image: caddy:2-alpine
-    container_name: proofping-caddy
-    restart: unless-stopped
-    depends_on:
-      - app
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - proofping-caddy-data:/data
-      - proofping-caddy-config:/config
 
 volumes:
   proofping-postgres-data:
   proofping-evidence-storage:
-  proofping-caddy-data:
-  proofping-caddy-config:
+
+networks:
+  proxy:
+    external: true
+    name: childsafe-uganda_default

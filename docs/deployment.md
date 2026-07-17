@@ -1,8 +1,9 @@
 # ProofPing Production Deployment
 
-Production is designed to run like the ChildSafe server setup:
+Production is designed to run on the existing ChildSafe Hetzner server:
 
-- Docker Compose runs PostgreSQL, the Next.js app, and Caddy.
+- Docker Compose runs PostgreSQL and the Next.js app.
+- The app joins the existing ChildSafe Docker network so the existing Caddy container can proxy to it.
 - Caddy serves `getproofping.com`, redirects `www`, and issues HTTPS certificates automatically.
 - GitHub Actions deploys every push to `main` by SSHing into the Hetzner server.
 
@@ -57,6 +58,22 @@ Start manually once:
 
 ```bash
 docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Add these blocks to the existing ChildSafe server Caddyfile, then reload Caddy:
+
+```caddyfile
+getproofping.com {
+  reverse_proxy proofping-app:3000
+}
+
+www.getproofping.com {
+  redir https://getproofping.com{uri}
+}
+```
+
+```bash
+docker exec childsafe-caddy caddy reload --config /etc/caddy/Caddyfile
 ```
 
 ## Required `.env`

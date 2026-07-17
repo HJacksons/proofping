@@ -1,5 +1,5 @@
 getproofping.com {
-  reverse_proxy app:3000
+  reverse_proxy proofping-app:3000
 }
 
 www.getproofping.com {
