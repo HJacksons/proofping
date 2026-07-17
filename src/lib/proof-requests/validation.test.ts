@@ -26,12 +26,12 @@ describe("createProofRequestSchema", () => {
       title: "Can someone check this shop?",
       body: "I need a local person to confirm whether this shop exists before I pay.",
       category: "SELLER_OR_SHOP",
-      locationHint: "Kampala",
+      locationHint: "California",
       visibility: "LOCAL_DISCOVERY",
     });
 
     expect(parsed.visibility).toBe("LOCAL_DISCOVERY");
-    expect(parsed.locationHint).toBe("Kampala");
+    expect(parsed.locationHint).toBe("California");
   });
 
   it("requires a location for local discovery", () => {

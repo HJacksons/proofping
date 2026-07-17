@@ -45,7 +45,7 @@ export default async function DiscoverRequestsPage({
             defaultValue={locationQuery}
             maxLength={160}
             name="location"
-            placeholder="Oslo, Kampala, Lagos..."
+            placeholder="California, Lagos, London, Tokyo..."
           />
         </label>
         <button

@@ -1,9 +1,20 @@
-import { describe, expect, it, vi, afterEach } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-describe("parseAdminEmails", () => {
+const findUnique = vi.fn();
+
+vi.mock("@/lib/server/db", () => ({
+  prisma: {
+    user: {
+      findUnique,
+    },
+  },
+}));
+
+describe("isAdminUser", () => {
   afterEach(() => {
     vi.unstubAllEnvs();
     vi.resetModules();
+    findUnique.mockReset();
   });
 
   it("reads ADMIN_EMAIL when ADMIN_EMAILS is not set", async () => {
@@ -20,12 +31,14 @@ describe("parseAdminEmails", () => {
         isAdultVerified: true,
       }),
     ).resolves.toBe(true);
+    expect(findUnique).not.toHaveBeenCalled();
   });
 
   it("does not grant admin access from demo auth fallback data", async () => {
     vi.stubEnv("ENABLE_DEMO_AUTH", "true");
     vi.stubEnv("ADMIN_EMAIL", "");
     delete process.env.ADMIN_EMAILS;
+    findUnique.mockResolvedValue(null);
 
     const { isAdminUser } = await import("@/lib/server/admin");
 
@@ -36,5 +49,6 @@ describe("parseAdminEmails", () => {
         isAdultVerified: true,
       }),
     ).resolves.toBe(false);
+    expect(findUnique).toHaveBeenCalled();
   });
 });
