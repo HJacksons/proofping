@@ -107,3 +107,18 @@ SERVER_SSH_KEY=<private deploy key>
 ```
 
 The server user must be able to run Docker and access `~/apps/proofping`.
+
+## Current Server Automation
+
+The Hetzner server also has a `proofping-autodeploy.timer` systemd timer. It
+checks `origin/main` every 2 minutes from `/home/deploy/apps/proofping`, backs up
+the ProofPing database before new deploys, rebuilds the containers, and verifies
+`/api/health`.
+
+Useful commands:
+
+```bash
+systemctl status proofping-autodeploy.timer
+systemctl start proofping-autodeploy.service
+journalctl -u proofping-autodeploy.service -n 100 --no-pager
+```
