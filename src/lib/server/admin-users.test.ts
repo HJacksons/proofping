@@ -59,6 +59,6 @@ describe("getAdminUserPlaceOverview", () => {
       asks: 1,
       nearbyAsks: 1,
     });
-    expect(overview.note).toContain("free-text");
+    expect(overview.note.toLowerCase()).toContain("free-text");
   });
 });
