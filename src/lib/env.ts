@@ -2,6 +2,20 @@ import "server-only";
 
 import { z } from "zod";
 
+/** Prefer LIVE_* production names, fall back to STRIPE_*. */
+export function resolveStripeEnv(
+  liveValue: string | undefined,
+  fallbackValue: string | undefined,
+) {
+  const live = liveValue?.trim();
+  if (live) {
+    return live;
+  }
+
+  const fallback = fallbackValue?.trim();
+  return fallback || undefined;
+}
+
 const envSchema = z.object({
   APP_URL: z.url().default("http://localhost:3000"),
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
@@ -51,10 +65,22 @@ export const env = envSchema.parse({
   AUTH_LINK_DELIVERY: process.env.AUTH_LINK_DELIVERY,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   EMAIL_FROM: process.env.EMAIL_FROM,
-  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-  STRIPE_PRICE_DONATION: process.env.STRIPE_PRICE_DONATION,
-  STRIPE_PRICE_URGENT_BOOST: process.env.STRIPE_PRICE_URGENT_BOOST,
-  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+  STRIPE_SECRET_KEY: resolveStripeEnv(
+    process.env.LIVE_STRIPE_SECRET_KEY,
+    process.env.STRIPE_SECRET_KEY,
+  ),
+  STRIPE_PRICE_DONATION: resolveStripeEnv(
+    process.env.LIVE_STRIPE_PRICE_DONATION,
+    process.env.STRIPE_PRICE_DONATION,
+  ),
+  STRIPE_PRICE_URGENT_BOOST: resolveStripeEnv(
+    process.env.LIVE_STRIPE_PRICE_URGENT_BOOST,
+    process.env.STRIPE_PRICE_URGENT_BOOST,
+  ),
+  STRIPE_WEBHOOK_SECRET: resolveStripeEnv(
+    process.env.LIVE_STRIPE_WEBHOOK_SECRET,
+    process.env.STRIPE_WEBHOOK_SECRET,
+  ),
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   OPENAI_MODEL: process.env.OPENAI_MODEL,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
