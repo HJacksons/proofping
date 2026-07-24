@@ -48,7 +48,7 @@ export function LandingPage() {
         </div>
 
         <p className="mt-6 text-xs text-muted">
-          Free to ask · Boost for speed · Help nearby — learn or lend a hand
+          Free to ask · 30-sec proofs · Help nearby
         </p>
       </section>
 
@@ -58,24 +58,21 @@ export function LandingPage() {
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-md border border-line bg-surface px-4 py-3 text-left">
-            <p className="text-sm font-semibold">Ask free</p>
+            <p className="text-sm font-semibold">Ask</p>
             <p className="mt-1 text-sm leading-6 text-muted">
-              Share a private link or open it nearby. Core proof stays free.
+              One clear question. Private link or Help nearby.
             </p>
           </div>
           <div className="rounded-md border border-line bg-surface px-4 py-3 text-left">
-            <p className="text-sm font-semibold">Boost for speed</p>
+            <p className="text-sm font-semibold">Get a proof</p>
             <p className="mt-1 text-sm leading-6 text-muted">
-              Need an answer before you leave or pay? Mark the ask urgent so
-              helpers notice faster.
+              Someone there replies. Timestamped. No guessing.
             </p>
           </div>
           <div className="rounded-md border border-line bg-surface px-4 py-3 text-left">
-            <p className="text-sm font-semibold">Help nearby</p>
+            <p className="text-sm font-semibold">Decide</p>
             <p className="mt-1 text-sm leading-6 text-muted">
-              Browse open asks where you are. Help with a proof card — or learn
-              from them before you waste a trip. Turn on device alerts in
-              Settings when you want a ping.
+              Go, wait, pay — or pick another option. With signal.
             </p>
           </div>
         </div>

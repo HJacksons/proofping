@@ -124,7 +124,7 @@ export function CreateRequestForm({
     setLocationHint("");
     setState({
       status: "success",
-      message: "Share link ready — send it to someone who’s there or who knows the place.",
+      message: "Link ready. Send it to someone who’s there — WhatsApp, text, anywhere.",
       requestId: payload.request.id,
       replyShareUrl: payload.request.replyShareUrl ?? null,
     });
@@ -214,15 +214,15 @@ export function CreateRequestForm({
     <>
     <form className="grid gap-4" onSubmit={handleSubmit}>
       <div className="grid gap-3 rounded-md border border-line bg-background px-4 py-3 text-sm">
-        <p className="font-semibold">How ProofPing works</p>
+        <p className="font-semibold">The 30-second loop</p>
         <div className="grid gap-2 text-muted sm:grid-cols-3">
           <p>
-            <span className="font-semibold text-foreground">1. Ask</span> before
-            you pay, go, or miss a better option.
+            <span className="font-semibold text-foreground">1. Ask</span> what’s
+            true before you move.
           </p>
           <p>
-            <span className="font-semibold text-foreground">2. Share</span> a
-            private link, or open it to nearby helpers.
+            <span className="font-semibold text-foreground">2. Ping</span> someone
+            there (or open Help nearby).
           </p>
           <p>
             <span className="font-semibold text-foreground">3. Decide</span> from

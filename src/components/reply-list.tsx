@@ -81,10 +81,9 @@ export function ReplyList({
     return (
       <FeedCard>
         <FeedCardBody>
-          <p className="text-sm font-medium">No proof cards yet</p>
+          <p className="text-sm font-medium">Waiting on the first proof</p>
           <p className="mt-1 text-sm text-muted">
-            Share the helper link — or open it nearby so someone already there
-            can send the first proof.
+            Send the link to someone already there. First reply builds the card.
           </p>
         </FeedCardBody>
       </FeedCard>

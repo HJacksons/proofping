@@ -76,15 +76,15 @@ export default async function DashboardPage() {
       {requests.length === 0 ? (
         <FeedCard>
           <FeedCardBody>
-            <h2 className="text-lg font-semibold">No requests yet</h2>
+            <h2 className="text-lg font-semibold">No asks yet — start one</h2>
             <p className="mt-1 text-sm leading-6 text-muted">
-              Create a proof request and share it with someone who can check.
+              One question. One person who’s there. Proof before you decide.
             </p>
             <Link
               className="mt-3 inline-flex rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-strong hover:text-white"
               href="/requests/new"
             >
-              Create request
+              Ask for proof
             </Link>
           </FeedCardBody>
         </FeedCard>

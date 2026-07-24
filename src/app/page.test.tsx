@@ -17,9 +17,12 @@ describe("Home", () => {
     expect(screen.getByRole("link", { name: "Help nearby" })).toBeDefined();
     expect(screen.getByRole("link", { name: "My requests" })).toBeDefined();
     expect(
-      screen.getByText(/Free to ask · Boost for speed · Help nearby — learn or lend a hand/i),
+      screen.getByText(/Free to ask · 30-sec proofs · Help nearby/i),
     ).toBeDefined();
     expect(screen.getByText(/How it works/i)).toBeDefined();
+    expect(screen.getByText(/^Ask$/i)).toBeDefined();
+    expect(screen.getByText(/Get a proof/i)).toBeDefined();
+    expect(screen.getByText(/^Decide$/i)).toBeDefined();
     expect(
       screen.getByRole("heading", {
         name: "How long is the queue at the west gate?",

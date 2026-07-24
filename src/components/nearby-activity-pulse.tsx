@@ -30,8 +30,7 @@ export function NearbyActivityPulse({
       <div>
         <p className="text-sm font-semibold">Right now{placeBit}</p>
         <p className="mt-0.5 text-xs leading-5 text-muted">
-          Live from this place’s asks, helpers watching, and people checking
-          Help nearby — so you know help can show up.
+          Open asks · people looking · proofs landing. Density you can feel.
         </p>
       </div>
 

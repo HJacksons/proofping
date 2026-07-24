@@ -36,12 +36,11 @@ export default async function DiscoverRequestsPage({
       <section className="grid gap-3 text-center sm:text-left">
         <p className="text-sm font-semibold text-accent-strong">Help nearby</p>
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Someone’s ask might save you too.
+          What’s true here, right now.
         </h1>
         <p className="max-w-2xl text-sm leading-6 text-muted sm:text-base">
-          Peek at what’s open near you — help with a quick proof card, or just
-          learn what’s true right now before you walk, wait, or pay. Schools,
-          markets, offices, beaches, events, concerts. This list refreshes live.
+          Open asks from people who need eyes on a place. Reply in 30 seconds —
+          or read a proof before you walk, wait, or pay. Live list.
         </p>
       </section>
 
@@ -62,10 +61,10 @@ export default async function DiscoverRequestsPage({
       ) : result.requests.length === 0 ? (
         <FeedCard>
           <FeedCardBody>
-            <h2 className="text-lg font-semibold">No open asks here yet</h2>
+            <h2 className="text-lg font-semibold">Quiet here — for now</h2>
             <p className="mt-1 text-sm leading-6 text-muted">
-              Be the first to ask what’s true nearby — your question might save
-              the next person (and you next time). Or try another place.
+              First ask in this place usually gets the first helper. Drop one,
+              or try another spot.
             </p>
             <Link
               className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-base font-semibold text-white transition-colors hover:bg-accent-strong hover:text-white sm:w-auto"
@@ -84,10 +83,9 @@ export default async function DiscoverRequestsPage({
         />
       )}
 
-      <p className="rounded-md border border-line bg-surface px-4 py-3 text-xs leading-5 text-muted">
-        Safety rule: help with public, lawful checks only. Do not answer or post
-        requests for stalking, private identity data, harassment, children, or
-        sensitive personal tracking.
+      <p className="text-xs leading-5 text-muted">
+        Public, lawful checks only. No stalking, doxxing, or hunting private
+        people.
       </p>
     </SiteShell>
   );

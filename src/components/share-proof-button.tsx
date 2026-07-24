@@ -151,10 +151,10 @@ export function ShareProofButton({
         <div className="grid gap-4 p-4">
           <div className="grid gap-1">
             <h2 className="text-base font-semibold" id={dialogTitleId}>
-              Share request
+              Send to someone there
             </h2>
             <p className="text-sm leading-6 text-muted">
-              Add a note, then pick any app on your phone or computer.
+              We write the pitch. You pick WhatsApp, iMessage, whatever.
             </p>
           </div>
 
@@ -165,7 +165,7 @@ export function ShareProofButton({
               id={noteFieldId}
               maxLength={500}
               onChange={(event) => setNote(event.target.value)}
-              placeholder="Optional"
+              placeholder="Optional — ‘are you at Bobst?’"
               value={note}
             />
           </label>
