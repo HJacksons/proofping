@@ -98,24 +98,27 @@ Stripe and OpenAI are optional. If missing, the app shows disabled states.
 
 ### Donations (Stripe)
 
-The Donate button appears when **both** are set:
+The Donate button appears when a secret key + donation price are set.
+Production prefers `LIVE_STRIPE_*`; `STRIPE_*` still works as fallback.
 
 ```env
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_PRICE_DONATION=price_...
+LIVE_STRIPE_SECRET_KEY=sk_live_...
+LIVE_STRIPE_PRICE_DONATION=price_...
+LIVE_STRIPE_PRICE_URGENT_BOOST=price_...
+STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
-`LIVE_STRIPE_*` names are ignored — the app only reads `STRIPE_*`.
+1. Stripe Dashboard (Live mode) → create one-time Prices → copy `price_...`
+2. Put live secret in `LIVE_STRIPE_SECRET_KEY`
+3. Developers → Webhooks / Event destinations → **Your account**
+4. Selected events → search `checkout` → enable **`checkout.session.completed`**
+5. Destination type: **Webhook endpoint**
+6. URL: `https://getproofping.com/api/payments/webhook`
+7. Copy signing secret `whsec_...` → `STRIPE_WEBHOOK_SECRET`
+8. Restart containers after editing `.env`
+9. Sign in → Donate / boost → confirm webhook delivery in Stripe
 
-1. Stripe Dashboard → create a **one-time Payment** Price for donations → copy `price_...`
-2. Put the **live** secret key in `STRIPE_SECRET_KEY` (not `sk_test_` on production)
-3. Developers → Webhooks → endpoint  
-   `https://getproofping.com/api/payments/webhook`  
-   event: `checkout.session.completed` → copy signing secret to `STRIPE_WEBHOOK_SECRET`
-4. Restart containers after editing `.env`
-5. Sign in on the site, click Donate, complete a small live/test payment
-
-Urgent boost needs `STRIPE_PRICE_URGENT_BOOST` the same way.
+Urgent boost needs `LIVE_STRIPE_PRICE_URGENT_BOOST` the same way.
 
 ## GitHub Secrets
 
