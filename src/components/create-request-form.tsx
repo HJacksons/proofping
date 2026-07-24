@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { AttachmentPicker } from "@/components/attachment-picker";
 import { PlaceAutocomplete } from "@/components/place-autocomplete";
+import { ProductFeedbackPrompt } from "@/components/product-feedback-prompt";
 import { ShareProofButton } from "@/components/share-proof-button";
 import { MAX_EVIDENCE_FILES_PER_REQUEST } from "@/lib/evidence/validation";
 import {
@@ -78,6 +79,7 @@ export function CreateRequestForm({
   const [improveError, setImproveError] = useState<string | null>(null);
   const [showAiConfirm, setShowAiConfirm] = useState(false);
   const [locationHint, setLocationHint] = useState("");
+  const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false);
   const titleFieldId = useId();
   const titleRef = useRef<HTMLInputElement>(null);
   const detailsRef = useRef<HTMLTextAreaElement>(null);
@@ -126,6 +128,10 @@ export function CreateRequestForm({
       requestId: payload.request.id,
       replyShareUrl: payload.request.replyShareUrl ?? null,
     });
+
+    window.setTimeout(() => {
+      setShowFeedbackPrompt(true);
+    }, 1200);
   }
 
   async function handleImproveWording() {
@@ -205,6 +211,7 @@ export function CreateRequestForm({
   }
 
   return (
+    <>
     <form className="grid gap-4" onSubmit={handleSubmit}>
       <div className="grid gap-3 rounded-md border border-line bg-background px-4 py-3 text-sm">
         <p className="font-semibold">How ProofPing works</p>
@@ -461,6 +468,13 @@ export function CreateRequestForm({
         </div>
       ) : null}
     </form>
+    <ProductFeedbackPrompt
+      open={showFeedbackPrompt}
+      path="/requests/new"
+      requestId={state.requestId}
+      onClose={() => setShowFeedbackPrompt(false)}
+    />
+    </>
   );
 }
 

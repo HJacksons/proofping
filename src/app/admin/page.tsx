@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { AdminSeedSamplesButton } from "@/components/admin-seed-samples-button";
 import { ProofTimestamp } from "@/components/proof-timestamp";
 import { FeedCard, FeedCardBody } from "@/components/ui/feed-card";
 import { SiteShell } from "@/components/site-shell";
@@ -44,6 +45,23 @@ export default async function AdminHomePage() {
           ) : null}
         </div>
       </header>
+
+      <FeedCard className="border-0 ring-1 ring-line">
+        <FeedCardBody className="sm:py-5">
+          <h2 className="text-lg font-semibold tracking-tight">
+            Sample Help nearby activity
+          </h2>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-muted">
+            Load complete campus/city asks with proof replies (OsloMet, NYU,
+            Berkeley, London, Denver, MIT, Stanford, Columbia). Idempotent —
+            replaces prior sample rows only. Search those places on Help nearby
+            to see them.
+          </p>
+          <div className="mt-4">
+            <AdminSeedSamplesButton />
+          </div>
+        </FeedCardBody>
+      </FeedCard>
 
       {!dashboard ? (
         <FeedCard>
@@ -309,7 +327,7 @@ export default async function AdminHomePage() {
             </FeedCard>
           </section>
 
-          <nav className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <nav className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <QuickLink
               href="/admin/users"
               title="Users & places"
@@ -324,6 +342,11 @@ export default async function AdminHomePage() {
               href="/admin/visits"
               title="Site visits"
               body="Paths, countries, uniques"
+            />
+            <QuickLink
+              href="/admin/feedback"
+              title="Feedback"
+              body="Post-ask pulse reports"
             />
             <QuickLink
               href="/admin/payments"

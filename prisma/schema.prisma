@@ -70,6 +70,7 @@ model User {
   authSessions         AuthSession[]
   forwards             ProofRequestForward[]
   payments             Payment[]
+  productFeedback      ProductFeedback[]
 }
 
 model AuthSession {
@@ -195,4 +196,19 @@ model SitePageView {
   @@index([path, createdAt])
   @@index([visitorKeyHash, createdAt])
   @@index([countryCode, createdAt])
+}
+
+/// Product feedback from users (bugs, confusion, ideas). No IPs stored.
+model ProductFeedback {
+  id        String   @id @default(cuid())
+  category  String   @db.VarChar(32)
+  message   String   @db.VarChar(1000)
+  path      String?  @db.VarChar(512)
+  requestId String?  @db.VarChar(64)
+  userId    String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([category, createdAt])
 }

@@ -52,6 +52,11 @@ export default function PrivacyPage() {
             — anonymous page views for operators (paths and approximate
             country from the connection; no IPs or emails in visit logs).
           </li>
+          <li>
+            <span className="font-medium text-foreground">Product feedback</span>{" "}
+            — optional notes after you create an ask (bugs, confusion, ideas).
+            No IPs stored.
+          </li>
         </ul>
       </section>
 

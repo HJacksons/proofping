@@ -96,6 +96,27 @@ EMAIL_FROM=ProofPing <hello@getproofping.com>
 
 Stripe and OpenAI are optional. If missing, the app shows disabled states.
 
+### Donations (Stripe)
+
+The Donate button appears when **both** are set:
+
+```env
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_PRICE_DONATION=price_...
+```
+
+`LIVE_STRIPE_*` names are ignored — the app only reads `STRIPE_*`.
+
+1. Stripe Dashboard → create a **one-time Payment** Price for donations → copy `price_...`
+2. Put the **live** secret key in `STRIPE_SECRET_KEY` (not `sk_test_` on production)
+3. Developers → Webhooks → endpoint  
+   `https://getproofping.com/api/payments/webhook`  
+   event: `checkout.session.completed` → copy signing secret to `STRIPE_WEBHOOK_SECRET`
+4. Restart containers after editing `.env`
+5. Sign in on the site, click Donate, complete a small live/test payment
+
+Urgent boost needs `STRIPE_PRICE_URGENT_BOOST` the same way.
+
 ## GitHub Secrets
 
 Add these repository secrets in GitHub:
