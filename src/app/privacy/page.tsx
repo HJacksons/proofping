@@ -4,7 +4,7 @@ import { SiteShell } from "@/components/site-shell";
 
 export const metadata = {
   title: "Privacy — ProofPing",
-  description: "How ProofPing handles your email and request data.",
+  description: "How ProofPing handles your data — simply.",
 };
 
 export default function PrivacyPage() {
@@ -16,92 +16,81 @@ export default function PrivacyPage() {
           Your privacy, simply
         </h1>
         <p className="text-sm leading-7 text-muted">
-          Last updated: July 17, 2026. We collect as little as we can.
+          Last updated: July 24, 2026. We collect only what we need to run
+          ProofPing.
         </p>
       </div>
 
       <section className="grid gap-3">
-        <h2 className="text-xl font-semibold">What we collect</h2>
+        <h2 className="text-xl font-semibold">What we use</h2>
         <ul className="grid gap-2 text-sm leading-7 text-muted sm:text-base">
           <li>
-            <span className="font-medium text-foreground">Email</span> — only
-            to sign you in and send your magic link. Not sold, not shared, and
-            never shown on requests. Requesters may also get an email when a
-            proof card arrives.
+            <span className="font-medium text-foreground">Email</span> — for
+            your sign-in link, and to notify you when a proof arrives. Not
+            sold, not shown on public asks.
           </li>
           <li>
-            <span className="font-medium text-foreground">
-              Place hints
-            </span>{" "}
-            — optional text you type on asks or nearby alerts (e.g. campus,
-            market, city). Not GPS tracking.
+            <span className="font-medium text-foreground">Your asks & proofs</span>{" "}
+            — so helpers can reply and you can see the result.
           </li>
           <li>
-            <span className="font-medium text-foreground">
-              Requests and replies
-            </span>{" "}
-            — what you choose to post so helpers can respond.
+            <span className="font-medium text-foreground">Place labels</span> —
+            text you choose (campus, market, city). Not GPS tracking.
           </li>
           <li>
-            <span className="font-medium text-foreground">Payments</span> — if
-            you donate or boost, Stripe handles the card. We keep only what we
-            need for support.
+            <span className="font-medium text-foreground">Alerts (optional)</span>{" "}
+            — if you turn them on in Settings. Can stay on your device only.
           </li>
           <li>
-            <span className="font-medium text-foreground">Site analytics</span>{" "}
-            — anonymous page views for operators (paths and approximate
-            country from the connection; no IPs or emails in visit logs).
+            <span className="font-medium text-foreground">Payments (optional)</span>{" "}
+            — donate or boost via Stripe. We don’t store your card number.
           </li>
           <li>
-            <span className="font-medium text-foreground">Product feedback</span>{" "}
-            — optional notes after you create an ask (bugs, confusion, ideas).
-            No IPs stored.
+            <span className="font-medium text-foreground">Feedback (optional)</span>{" "}
+            — if you send a note on{" "}
+            <Link
+              className="font-semibold text-accent-strong hover:underline"
+              href="/feedback"
+            >
+              Feedback
+            </Link>
+            .
           </li>
         </ul>
       </section>
 
       <section className="grid gap-3">
-        <h2 className="text-xl font-semibold">What we do not do</h2>
+        <h2 className="text-xl font-semibold">What we don’t do</h2>
         <ul className="grid gap-2 text-sm leading-7 text-muted sm:text-base">
-          <li>We do not sell your data.</li>
-          <li>We do not run ads against your inbox.</li>
-          <li>We do not put your email on public requests.</li>
+          <li>Sell your data.</li>
+          <li>Show your email on requests.</li>
+          <li>Run ad trackers on your inbox.</li>
         </ul>
       </section>
 
       <section className="grid gap-3">
         <h2 className="text-xl font-semibold">Cookies</h2>
         <p className="text-sm leading-7 text-muted sm:text-base">
-          We use small cookies so sign-in works. No advertising trackers. No
-          cookie pop-up wall.
-        </p>
-      </section>
-
-      <section className="grid gap-3">
-        <h2 className="text-xl font-semibold">Operators</h2>
-        <p className="text-sm leading-7 text-muted sm:text-base">
-          Platform operators can see accounts, alert watch places, and ask
-          location hints to run and improve the service. Public pages still
-          hide emails.
+          Small cookies keep you signed in. No advertising trackers.
         </p>
       </section>
 
       <section className="grid gap-3">
         <h2 className="text-xl font-semibold">Contact</h2>
         <p className="text-sm leading-7 text-muted sm:text-base">
-          Questions? Email{" "}
-          <a
-            className="font-semibold text-accent-strong hover:underline"
-            href="mailto:info@proofping.com"
-          >
-            info@proofping.com
-          </a>
-          . Or read{" "}
+          Questions or ideas →{" "}
           <Link
             className="font-semibold text-accent-strong hover:underline"
-            href="/about"
+            href="/feedback"
           >
-            About
+            Feedback
+          </Link>
+          . Also{" "}
+          <Link
+            className="font-semibold text-accent-strong hover:underline"
+            href="/terms"
+          >
+            Terms
           </Link>
           .
         </p>

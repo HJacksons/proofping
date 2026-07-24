@@ -56,36 +56,27 @@ export default function AboutPage() {
       </section>
 
       <section className="grid gap-3">
-        <h2 className="text-xl font-semibold">How value works today</h2>
+        <h2 className="text-xl font-semibold">How it works</h2>
         <ul className="grid gap-2 text-sm leading-7 text-muted sm:text-base">
           <li>
             <span className="font-medium text-foreground">Free to ask</span> —
-            private link or Help nearby. Core proof stays free.
+            private link or Help nearby.
           </li>
           <li>
             <span className="font-medium text-foreground">Boost for speed</span>{" "}
-            — optional paid urgent mark when you need proof before you leave or
-            pay.
+            — optional, when you need an answer sooner.
           </li>
           <li>
-            <span className="font-medium text-foreground">Instant alerts</span>{" "}
-            — no account needed. Turn on device alerts in{" "}
+            <span className="font-medium text-foreground">Alerts</span> — turn
+            on in{" "}
             <Link
               className="font-semibold text-accent-strong hover:underline"
               href="/settings"
             >
               Settings
             </Link>{" "}
-            (while ProofPing is open — even a background tab). Check out nearby
-            asks: help with a proof card, or learn what’s true before you move.
-            Requesters can still get emailed when a proof card arrives.
-          </li>
-          <li>
-            <span className="font-medium text-foreground">
-              Credits wallet later
-            </span>{" "}
-            — unlock packs and helper cash rewards come after density is real.
-            Not live yet.
+            for nearby asks (while ProofPing is open). You’ll also get an email
+            when a proof arrives on your ask.
           </li>
         </ul>
       </section>
@@ -103,13 +94,13 @@ export default function AboutPage() {
       </section>
 
       <p className="text-sm text-muted">
-        Questions?{" "}
-        <a
+        Something rough?{" "}
+        <Link
           className="font-semibold text-accent-strong hover:underline"
-          href="mailto:info@proofping.com"
+          href="/feedback"
         >
-          info@proofping.com
-        </a>
+          Send feedback
+        </Link>
         . Also see{" "}
         <Link
           className="font-semibold text-accent-strong hover:underline"

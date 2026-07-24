@@ -54,7 +54,7 @@ export function LandingPage() {
 
       <section className="mt-12 grid gap-4 sm:mt-14">
         <p className="text-center text-xs font-medium uppercase tracking-[0.12em] text-muted">
-          How value works today
+          How it works
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-md border border-line bg-surface px-4 py-3 text-left">

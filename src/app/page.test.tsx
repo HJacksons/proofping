@@ -19,7 +19,7 @@ describe("Home", () => {
     expect(
       screen.getByText(/Free to ask · Boost for speed · Help nearby — learn or lend a hand/i),
     ).toBeDefined();
-    expect(screen.getByText(/How value works today/i)).toBeDefined();
+    expect(screen.getByText(/How it works/i)).toBeDefined();
     expect(
       screen.getByRole("heading", {
         name: "How long is the queue at the west gate?",

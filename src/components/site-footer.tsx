@@ -57,6 +57,12 @@ export function SiteFooter({ donationsEnabled = false }: SiteFooterProps) {
             </Link>
             <Link
               className="text-xs font-semibold text-muted hover:text-foreground"
+              href="/feedback"
+            >
+              Feedback
+            </Link>
+            <Link
+              className="text-xs font-semibold text-muted hover:text-foreground"
               href="/privacy"
             >
               Privacy

@@ -95,11 +95,11 @@ export function LoginForm() {
           type="checkbox"
         />
         <span>
-          I agree to the{" "}
+          I’m 18+ and agree to the{" "}
           <Link className="font-semibold text-accent-strong hover:underline" href="/terms">
             Terms
-          </Link>{" "}
-          and will use ProofPing lawfully.
+          </Link>
+          .
         </span>
       </label>
 
