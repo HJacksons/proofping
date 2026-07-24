@@ -10,13 +10,20 @@ describe("Home", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Before you pay a stranger, get a real person to check.",
+        name: "Ask someone who’s actually there.",
       }),
     ).toBeDefined();
     expect(screen.getByRole("link", { name: "Ask for proof" })).toBeDefined();
+    expect(screen.getByRole("link", { name: "Help nearby" })).toBeDefined();
     expect(screen.getByRole("link", { name: "My requests" })).toBeDefined();
     expect(
-      screen.getByText(/Optional AI helps you write a clear question/i),
+      screen.getByText(/Free to ask · Boost for speed · Help nearby — learn or lend a hand/i),
+    ).toBeDefined();
+    expect(screen.getByText(/How value works today/i)).toBeDefined();
+    expect(
+      screen.getByRole("heading", {
+        name: "How long is the queue at the west gate?",
+      }),
     ).toBeDefined();
   });
 });

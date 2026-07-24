@@ -30,7 +30,56 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  /* Comfortable phone scrolling; avoids overscroll quirks under sticky bars */
+  -webkit-tap-highlight-color: transparent;
 }
+
+/* Keep form controls ≥16px so iOS Safari does not zoom on focus */
+input,
+textarea,
+select,
+button {
+  font-size: 16px;
+}
+
+@media (min-width: 640px) {
+  input,
+  textarea,
+  select,
+  button {
+    font-size: inherit;
+  }
+}
+
+.safe-pb {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+/* Sticky form CTAs sit above the mobile bottom tab bar */
+.sticky-above-nav {
+  bottom: calc(4.25rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+  .sticky-above-nav {
+    bottom: auto;
+  }
+}
+
+.chip-scroll {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.chip-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 
 a {
   text-underline-offset: 4px;

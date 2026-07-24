@@ -21,17 +21,17 @@ describe("createProofRequestSchema", () => {
     });
   });
 
-  it("accepts local discovery when a location is provided", () => {
+  it("accepts facility / queue category for right-now checks", () => {
     const parsed = createProofRequestSchema.parse({
-      title: "Can someone check this shop?",
-      body: "I need a local person to confirm whether this shop exists before I pay.",
-      category: "SELLER_OR_SHOP",
-      locationHint: "California",
+      title: "Is the library printer working?",
+      body: "Need to print before class. Can someone check if it is up?",
+      category: "FACILITY_OR_QUEUE",
+      locationHint: "Campus library",
       visibility: "LOCAL_DISCOVERY",
     });
 
-    expect(parsed.visibility).toBe("LOCAL_DISCOVERY");
-    expect(parsed.locationHint).toBe("California");
+    expect(parsed.category).toBe("FACILITY_OR_QUEUE");
+    expect(parsed.locationHint).toBe("Campus library");
   });
 
   it("requires a location for local discovery", () => {

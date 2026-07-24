@@ -5,34 +5,89 @@ import { SiteShell } from "@/components/site-shell";
 export const metadata = {
   title: "About — ProofPing",
   description:
-    "ProofPing helps you verify before you pay — instead of hoping it works out.",
+    "ProofPing: human proof before you pay, go, or miss a better option.",
 };
 
 export default function AboutPage() {
   return (
     <SiteShell width="narrow">
       <div className="grid gap-3">
-        <p className="text-sm font-medium text-accent-strong">About us</p>
+        <p className="text-sm font-medium text-accent-strong">About ProofPing</p>
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Built for the moment you almost send the money
+          Proof before you waste the trip
         </h1>
         <p className="max-w-2xl text-base leading-7 text-muted sm:text-lg">
-          Too many people end up thinking{" "}
+          Before you pay. Before you walk over for nothing. Before you
+          miss a better option. ProofPing asks someone who’s actually there —
+          and brings back a proof card you can trust more than{" "}
           <span className="font-medium text-foreground">
             “I’ll just risk it.”
-          </span>{" "}
-          ProofPing is the other option: ask a real person nearby to check
-          before you pay.
+          </span>
         </p>
       </div>
 
       <section className="grid gap-3">
-        <h2 className="text-xl font-semibold">What we are</h2>
+        <h2 className="text-xl font-semibold">Where it fits</h2>
         <p className="text-sm leading-7 text-muted sm:text-base">
-          A simple way to get real-world confirmation — listings, shops,
-          sellers, addresses, and local situations that AI cannot physically
-          check. You share one private link. Someone there sends proof back.
+          Busy places where truth changes fast: schools, markets, offices,
+          beaches, events, concerts, stations, shops, and queues.
         </p>
+      </section>
+
+      <section className="grid gap-3">
+        <h2 className="text-xl font-semibold">Moments we help</h2>
+        <ul className="grid gap-2 text-sm leading-7 text-muted sm:text-base">
+          <li>
+            <span className="font-medium text-foreground">Right now</span> —
+            queues, open/closed, printers, rooms, access, crowd size.
+          </li>
+          <li>
+            <span className="font-medium text-foreground">Before you pay</span>{" "}
+            — listings, sellers, shops, and deals that need a human check.
+          </li>
+          <li>
+            <span className="font-medium text-foreground">
+              Before you go
+            </span>{" "}
+            — next building or across the area; confirm it’s worth it, or choose
+            another option.
+          </li>
+        </ul>
+      </section>
+
+      <section className="grid gap-3">
+        <h2 className="text-xl font-semibold">How value works today</h2>
+        <ul className="grid gap-2 text-sm leading-7 text-muted sm:text-base">
+          <li>
+            <span className="font-medium text-foreground">Free to ask</span> —
+            private link or Help nearby. Core proof stays free.
+          </li>
+          <li>
+            <span className="font-medium text-foreground">Boost for speed</span>{" "}
+            — optional paid urgent mark when you need proof before you leave or
+            pay.
+          </li>
+          <li>
+            <span className="font-medium text-foreground">Instant alerts</span>{" "}
+            — no account needed. Turn on device alerts in{" "}
+            <Link
+              className="font-semibold text-accent-strong hover:underline"
+              href="/settings"
+            >
+              Settings
+            </Link>{" "}
+            (while ProofPing is open — even a background tab). Check out nearby
+            asks: help with a proof card, or learn what’s true before you move.
+            Requesters can still get emailed when a proof card arrives.
+          </li>
+          <li>
+            <span className="font-medium text-foreground">
+              Credits wallet later
+            </span>{" "}
+            — unlock packs and helper cash rewards come after density is real.
+            Not live yet.
+          </li>
+        </ul>
       </section>
 
       <section className="grid gap-3">
@@ -45,14 +100,6 @@ export default function AboutPage() {
             the proof.
           </li>
         </ul>
-      </section>
-
-      <section className="grid gap-3">
-        <h2 className="text-xl font-semibold">How we keep it useful</h2>
-        <p className="text-sm leading-7 text-muted sm:text-base">
-          ProofPing is for genuine local checks — not harassment, stalking, or
-          anything illegal. Built for help, not surveillance.
-        </p>
       </section>
 
       <p className="text-sm text-muted">

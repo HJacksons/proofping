@@ -17,7 +17,8 @@ export function SiteFooter({ donationsEnabled = false }: SiteFooterProps) {
               <BrandLockup />
             </div>
             <p className="mt-2 text-sm leading-6 text-muted">
-              Ask a real person nearby when something needs checking.
+              Before you pay. Before you waste a trip. Before you miss a
+              better option — ask someone who’s actually there.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end sm:gap-4">

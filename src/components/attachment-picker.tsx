@@ -73,7 +73,7 @@ export function AttachmentPicker({
         <span className="text-sm text-muted">{helpText}</span>
         <input
           accept={allowedEvidenceMimeTypes.join(",")}
-          className="block w-full text-sm text-muted file:mr-3 file:rounded-lg file:border-0 file:bg-accent-soft file:px-3 file:py-2 file:text-sm file:font-semibold file:text-accent-strong"
+          className="block w-full text-sm text-muted file:mr-3 file:min-h-11 file:rounded-lg file:border-0 file:bg-accent-soft file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-accent-strong"
           id={inputId}
           multiple={maxFiles > 1}
           name="attachments"

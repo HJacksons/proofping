@@ -11,6 +11,7 @@ import { ShareProofButton } from "@/components/share-proof-button";
 import { UrgentBadge } from "@/components/urgent-badge";
 import { FeedCard, FeedCardBody } from "@/components/ui/feed-card";
 import { getProofRequestCategoryLabel } from "@/lib/proof-requests/categories";
+import { getRequestPreviewBody } from "@/lib/proof-requests/preview";
 import type { ProofReplySummary } from "@/lib/proof-replies/summary";
 import { canAcceptReplies, getProofRequestStatusLabel } from "@/lib/proof-requests/status";
 
@@ -116,9 +117,16 @@ export function RequestList({
               <ProofStatsRow summary={request.replySummary} />
             </div>
 
-            <p className="mt-3 line-clamp-2 text-sm leading-6 text-foreground/90">
-              {request.body}
-            </p>
+            {(() => {
+              const preview = getRequestPreviewBody(request.body, {
+                title: request.title,
+              });
+              return preview ? (
+                <p className="mt-3 line-clamp-2 text-sm leading-6 text-foreground/90">
+                  {preview}
+                </p>
+              ) : null;
+            })()}
           </FeedCardBody>
 
           {request.replyShareUrl ? (

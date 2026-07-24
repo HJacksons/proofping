@@ -161,7 +161,7 @@ export function ShareProofButton({
           <label className="grid gap-1" htmlFor={noteFieldId}>
             <span className="text-sm font-medium text-muted">Note</span>
             <textarea
-              className="min-h-20 rounded-md border border-line bg-background px-3 py-2 text-sm leading-6 outline-none focus:border-accent"
+              className="min-h-24 rounded-md border border-line bg-background px-4 py-3 text-base leading-6 outline-none focus:border-accent"
               id={noteFieldId}
               maxLength={500}
               onChange={(event) => setNote(event.target.value)}
@@ -170,16 +170,16 @@ export function ShareProofButton({
             />
           </label>
 
-          <div className="flex justify-end gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <button
-              className="rounded-md px-3 py-2 text-sm font-semibold text-muted hover:bg-foreground/5 hover:text-foreground"
+              className="min-h-12 rounded-md px-3 text-sm font-semibold text-muted hover:bg-foreground/5 hover:text-foreground"
               onClick={closeDialog}
               type="button"
             >
               Cancel
             </button>
             <button
-              className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-strong"
+              className="min-h-12 rounded-md bg-accent px-4 text-sm font-semibold text-white hover:bg-accent-strong"
               onClick={() => {
                 void shareWithNote();
               }}

@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 
 import { generateSecureToken, hashToken } from "@/lib/auth/crypto";
 import { prisma } from "@/lib/server/db";
+import { countryDisplayName } from "@/lib/server/request-country";
 
 export const VISITOR_COOKIE_NAME = "pp_vid";
 const VISITOR_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
@@ -15,6 +16,8 @@ export type SiteVisitInput = {
   path: string;
   referrer?: string | null;
   userAgent?: string | null;
+  /** ISO 3166-1 alpha-2 from connection. Never pass or store an IP. */
+  countryCode?: string | null;
 };
 
 export type SiteVisitStatsDTO = {
@@ -24,14 +27,23 @@ export type SiteVisitStatsDTO = {
   humanViews: number;
   botViews: number;
   topPaths: Array<{ path: string; views: number }>;
+  topCountries: Array<{
+    countryCode: string;
+    countryName: string;
+    views: number;
+    uniqueVisitors: number;
+  }>;
   viewsByDay: Array<{ date: string; views: number; uniqueVisitors: number }>;
   recent: Array<{
     id: string;
     path: string;
     referrerHost: string | null;
+    countryCode: string | null;
+    countryName: string | null;
     isBot: boolean;
     createdAt: string;
   }>;
+  note: string;
 };
 
 export function extractReferrerHost(referrer: string | null | undefined) {
@@ -88,12 +100,15 @@ export function visitorCookieOptions(token: string) {
 export async function recordSiteVisit(input: SiteVisitInput) {
   const { visitorKeyHash, setCookieValue } = await resolveVisitorKeyHash();
   const isBot = isBotUserAgent(input.userAgent);
+  const countryCode = input.countryCode?.trim().toUpperCase() || null;
 
   await prisma.sitePageView.create({
     data: {
       path: input.path.slice(0, 512),
       referrerHost: extractReferrerHost(input.referrer),
       visitorKeyHash,
+      countryCode:
+        countryCode && /^[A-Z]{2}$/.test(countryCode) ? countryCode : null,
       isBot,
     },
   });
@@ -141,6 +156,7 @@ export async function getSiteVisitStats(days = 14): Promise<SiteVisitStatsDTO> {
       path: true,
       referrerHost: true,
       visitorKeyHash: true,
+      countryCode: true,
       isBot: true,
       createdAt: true,
     },
@@ -149,6 +165,10 @@ export async function getSiteVisitStats(days = 14): Promise<SiteVisitStatsDTO> {
   const pathCounts = new Map<string, number>();
   const uniqueVisitors = new Set<string>();
   const dayBuckets = new Map<
+    string,
+    { views: number; visitors: Set<string> }
+  >();
+  const countryBuckets = new Map<
     string,
     { views: number; visitors: Set<string> }
   >();
@@ -174,6 +194,16 @@ export async function getSiteVisitStats(days = 14): Promise<SiteVisitStatsDTO> {
     bucket.views += 1;
     bucket.visitors.add(view.visitorKeyHash);
     dayBuckets.set(dayKey, bucket);
+
+    if (view.countryCode) {
+      const country = countryBuckets.get(view.countryCode) ?? {
+        views: 0,
+        visitors: new Set<string>(),
+      };
+      country.views += 1;
+      country.visitors.add(view.visitorKeyHash);
+      countryBuckets.set(view.countryCode, country);
+    }
   }
 
   const viewsByDay: SiteVisitStatsDTO["viewsByDay"] = [];
@@ -194,6 +224,21 @@ export async function getSiteVisitStats(days = 14): Promise<SiteVisitStatsDTO> {
     .sort((a, b) => b.views - a.views || a.path.localeCompare(b.path))
     .slice(0, 20);
 
+  const topCountries = [...countryBuckets.entries()]
+    .map(([countryCode, bucket]) => ({
+      countryCode,
+      countryName: countryDisplayName(countryCode),
+      views: bucket.views,
+      uniqueVisitors: bucket.visitors.size,
+    }))
+    .sort(
+      (a, b) =>
+        b.uniqueVisitors - a.uniqueVisitors ||
+        b.views - a.views ||
+        a.countryCode.localeCompare(b.countryCode),
+    )
+    .slice(0, 30);
+
   return {
     days,
     totalViews: views.length,
@@ -201,13 +246,19 @@ export async function getSiteVisitStats(days = 14): Promise<SiteVisitStatsDTO> {
     humanViews,
     botViews,
     topPaths,
+    topCountries,
     viewsByDay,
     recent: views.slice(0, 50).map((view) => ({
       id: view.id,
       path: view.path,
       referrerHost: view.referrerHost,
+      countryCode: view.countryCode,
+      countryName: view.countryCode
+        ? countryDisplayName(view.countryCode)
+        : null,
       isBot: view.isBot,
       createdAt: view.createdAt.toISOString(),
     })),
+    note: "Network country estimate (CDN/edge, client IP lookup, or local egress in development). Approximate; VPNs skew results. IP and email are not stored.",
   };
 }

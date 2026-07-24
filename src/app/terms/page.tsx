@@ -41,8 +41,8 @@ export default function TermsPage() {
         <h2 className="text-xl font-semibold">Proof is human, not perfect</h2>
         <p className="text-sm leading-7 text-muted sm:text-base">
           Helpers share what they see. We can’t guarantee every reply is
-          complete or that a deal is safe. Use your judgment before you send
-          money.
+          complete or that a situation is safe. Use your judgment before you
+          pay, go, wait, or commit.
         </p>
       </section>
 

@@ -1,9 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { VisitTracker } from "@/components/visit-tracker";
+import { NearbyDeviceAlerts } from "@/components/nearby-device-alerts";
+import { getAdminNavVisible } from "@/lib/server/admin";
+import { getCurrentUser } from "@/lib/server/auth";
 import { getIntegrationAvailability } from "@/lib/server/integrations";
 import "./globals.css";
 
@@ -18,9 +22,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ProofPing — Verify before you pay",
+  title: "ProofPing — What’s true right now",
   description:
-    "Get real human proof before you pay. AI helps you ask clearly; real people there send the proof.",
+    "Before you pay, go, or miss a better option — ask someone who’s actually there. Schools, markets, offices, beaches, events, concerts.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#faf9f7",
 };
 
 export default async function RootLayout({
@@ -29,6 +40,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const integrations = getIntegrationAvailability();
+  const user = await getCurrentUser();
+  const showAdminLink = await getAdminNavVisible(user);
 
   return (
     <html
@@ -37,9 +50,13 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <VisitTracker />
+        <NearbyDeviceAlerts />
         <SiteHeader />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pb-[calc(4.25rem+env(safe-area-inset-bottom))] sm:pb-0">
+          {children}
+        </main>
         <SiteFooter donationsEnabled={integrations.donations} />
+        <MobileBottomNav showAdminLink={showAdminLink} />
       </body>
     </html>
   );

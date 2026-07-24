@@ -6,6 +6,7 @@ import { CreateReplyForm } from "@/components/create-reply-form";
 import { EvidenceGallery } from "@/components/evidence-gallery";
 import { HelperUrgentNotice } from "@/components/helper-urgent-notice";
 import { ListingLink } from "@/components/listing-link";
+import { LiveProofRefresh } from "@/components/live-proof-refresh";
 import { ProofResultCard } from "@/components/proof-result-card";
 import { ProofTimestamp } from "@/components/proof-timestamp";
 import { RequestContextNotice } from "@/components/request-context-notice";
@@ -14,7 +15,9 @@ import { RequestReviewPanel } from "@/components/request-review-panel";
 import { ShareProofButton } from "@/components/share-proof-button";
 import { FeedCard, FeedCardBody } from "@/components/ui/feed-card";
 import { SiteShell } from "@/components/site-shell";
+import { getAskIntent } from "@/lib/proof-requests/ask-intent";
 import { getProofRequestCategoryLabel } from "@/lib/proof-requests/categories";
+import { getRequestPreviewBody } from "@/lib/proof-requests/preview";
 import { verifyReplyCapabilityToken } from "@/lib/proof-requests/reply-token";
 import { canAcceptReplies, getProofRequestStatusLabel } from "@/lib/proof-requests/status";
 import {
@@ -93,6 +96,10 @@ export default async function PublicProofRequestPage({
 
   return (
     <SiteShell>
+      <LiveProofRefresh
+        replyCount={request.replySummary.total}
+        requestId={request.id}
+      />
       <FeedCard>
         <FeedCardBody>
           <p className="text-xs font-semibold text-muted">
@@ -131,9 +138,16 @@ export default async function PublicProofRequestPage({
             </p>
           ) : null}
 
-          <p className="mt-4 whitespace-pre-wrap text-[15px] leading-7 text-foreground">
-            {request.body}
-          </p>
+          {(() => {
+            const preview = getRequestPreviewBody(request.body, {
+              title: request.title,
+            });
+            return preview ? (
+              <p className="mt-4 whitespace-pre-wrap text-[15px] leading-7 text-foreground">
+                {preview}
+              </p>
+            ) : null;
+          })()}
 
           {request.listingUrl ? (
             <div className="mt-4">
@@ -155,7 +169,10 @@ export default async function PublicProofRequestPage({
             />
           </div>
 
-          <ProofResultCard summary={request.replySummary} />
+          <ProofResultCard
+            intent={getAskIntent(request.category)}
+            summary={request.replySummary}
+          />
         </FeedCardBody>
 
         {request.isOwner && helperShareUrl ? (
@@ -185,11 +202,11 @@ export default async function PublicProofRequestPage({
       {canShowReplyForm ? (
         <FeedCard>
           <FeedCardBody>
-            <h2 className="text-base font-semibold">Your answer</h2>
+            <h2 className="text-base font-semibold">Send a proof card</h2>
             <p className="mt-1 text-sm text-muted">
               {canReplyFromDiscovery
-                ? "If you know this place or situation, your local knowledge can protect someone."
-                : "Share what you know. One tap is enough."}
+                ? "If you’re there now, one quick proof helps someone decide."
+                : "Share what you see. One tap is enough."}
             </p>
             <div className="mt-4">
               <CreateReplyForm
@@ -212,7 +229,7 @@ export default async function PublicProofRequestPage({
       ) : !request.isOwner ? (
         <FeedCard>
           <FeedCardBody>
-            <p className="text-sm font-semibold">Replies closed</p>
+            <p className="text-sm font-semibold">Proof cards closed</p>
             <p className="mt-1 text-sm leading-6 text-muted">
               This request is {getProofRequestStatusLabel(request.status).toLowerCase()}.
             </p>
@@ -221,7 +238,7 @@ export default async function PublicProofRequestPage({
       ) : null}
 
       <section className="grid gap-2">
-        <h2 className="px-1 text-base font-semibold">Replies</h2>
+        <h2 className="px-1 text-base font-semibold">Proof cards</h2>
         <ReplyList
           initialHasMore={request.repliesHasMore}
           initialNextCursor={request.repliesNextCursor}

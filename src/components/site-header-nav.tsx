@@ -76,32 +76,44 @@ export function SiteHeaderNav({
     };
   }, [menuOpen]);
 
-  const links = [
+  const desktopLinks = [
     {
       href: "/requests",
       label: "Help nearby",
+      shortLabel: "Help",
       isActive: pathname === "/requests",
     },
     {
       href: "/dashboard",
       label: "My requests",
+      shortLabel: "Mine",
       isActive: pathname === "/dashboard",
     },
     {
       href: "/requests/new",
       label: "Ask for proof",
+      shortLabel: "Ask",
       isActive: pathname === "/requests/new",
+    },
+    {
+      href: "/settings",
+      label: "Alerts",
+      shortLabel: "Alerts",
+      isActive: pathname === "/settings",
     },
     ...(showAdminLink
       ? [
           {
             href: "/admin",
             label: "Admin",
+            shortLabel: "Admin",
             isActive: pathname.startsWith("/admin"),
           },
         ]
       : []),
   ];
+
+  const hasAccountMenu = Boolean(userEmail || donationsEnabled || showAdminLink);
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-surface/95 backdrop-blur">
@@ -118,7 +130,7 @@ export function SiteHeaderNav({
           aria-label="Main navigation"
           className="hidden items-center gap-1 sm:flex"
         >
-          {links.map((link) => (
+          {desktopLinks.map((link) => (
             <Link
               className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
                 link.isActive
@@ -128,7 +140,7 @@ export function SiteHeaderNav({
               href={link.href}
               key={link.href}
             >
-              {link.label === "Ask for proof" ? "Ask" : link.label}
+              {link.shortLabel}
             </Link>
           ))}
 
@@ -155,20 +167,33 @@ export function SiteHeaderNav({
           )}
         </nav>
 
-        <button
-          aria-controls="mobile-nav"
-          aria-expanded={menuOpen}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          className="relative z-60 inline-flex size-11 items-center justify-center rounded-md text-foreground transition hover:bg-foreground/5 sm:hidden"
-          onClick={() => setMenuOpen((current) => !current)}
-          type="button"
-        >
-          <MenuIcon open={menuOpen} />
-        </button>
+        <div className="flex items-center gap-1 sm:hidden">
+          {!userEmail ? (
+            <Link
+              className="rounded-md px-3 py-2 text-sm font-semibold text-muted"
+              href="/login"
+            >
+              Sign in
+            </Link>
+          ) : null}
+
+          {hasAccountMenu ? (
+            <button
+              aria-controls="mobile-account-nav"
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              className="relative z-60 inline-flex size-11 items-center justify-center rounded-md text-foreground transition hover:bg-foreground/5"
+              onClick={() => setMenuOpen((current) => !current)}
+              type="button"
+            >
+              <MenuIcon open={menuOpen} />
+            </button>
+          ) : null}
+        </div>
       </div>
 
       {menuOpen ? (
-        <div className="sm:hidden" id="mobile-nav">
+        <div className="sm:hidden" id="mobile-account-nav">
           <button
             aria-label="Close menu"
             className="fixed inset-0 z-40 bg-foreground/20"
@@ -176,19 +201,16 @@ export function SiteHeaderNav({
             type="button"
           />
           <div className="absolute inset-x-0 top-full z-50 border-b border-line bg-surface px-4 py-4 shadow-lg">
-            <nav aria-label="Mobile navigation" className="grid gap-1">
-              {links.map((link) => (
+            <nav aria-label="Account" className="grid gap-1">
+              {showAdminLink ? (
                 <Link
-                  className={navLinkClass(link.isActive)}
-                  href={link.href}
-                  key={link.href}
+                  className={navLinkClass(pathname.startsWith("/admin"))}
+                  href="/admin"
                   onClick={() => setMenuOpen(false)}
                 >
-                  {link.label}
+                  Admin
                 </Link>
-              ))}
-
-              <div className="my-2 border-t border-line" />
+              ) : null}
 
               {userEmail ? (
                 <div className="grid gap-1">
@@ -201,15 +223,7 @@ export function SiteHeaderNav({
                     </div>
                   )}
                 </div>
-              ) : (
-                <Link
-                  className={navLinkClass(pathname === "/login")}
-                  href="/login"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Sign in
-                </Link>
-              )}
+              ) : null}
 
               {donationsEnabled ? (
                 <>

@@ -58,9 +58,16 @@ export async function createProofReply(
     },
     select: {
       id: true,
+      title: true,
       creatorId: true,
       status: true,
       visibility: true,
+      creator: {
+        select: {
+          id: true,
+          email: true,
+        },
+      },
     },
   });
 
@@ -110,6 +117,14 @@ export async function createProofReply(
       },
     },
   });
+
+  void import("@/lib/server/nearby-alerts").then(({ notifyRequesterOfProofReply }) =>
+    notifyRequesterOfProofReply({
+      requesterEmail: request.creator.email,
+      requestId: request.id,
+      requestTitle: request.title,
+    }),
+  );
 
   return toProofReplyDTO(refreshed);
 }

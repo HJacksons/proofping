@@ -27,7 +27,7 @@ export function BrandLockup({ compact = false }: BrandLockupProps) {
               : "text-[11px] font-medium lowercase leading-none tracking-[0.1em] text-muted [font-variant-caps:all-small-caps]"
           }
         >
-          Verify before you pay
+          Proof before you decide
         </span>
       </span>
     </span>

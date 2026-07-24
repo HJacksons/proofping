@@ -1,4 +1,5 @@
 export const DASHBOARD_REQUESTS_PAGE_SIZE = 20;
+export const NEARBY_REQUESTS_PAGE_SIZE = 8;
 export const REPLIES_PAGE_SIZE = 10;
 
 export type PaginatedResult<T> = {

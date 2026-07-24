@@ -6,9 +6,9 @@ import { ReplySignalRow } from "@/components/reply-signal-row";
 import { UrgentBadge } from "@/components/urgent-badge";
 
 const boostBenefits = [
-  "Urgent badge when someone opens your link",
-  '"Urgent:" added when you share',
-  "Reply momentum tracker on your request",
+  "Urgent badge so helpers notice your ask faster",
+  '"Urgent:" added when you share the link',
+  "Built for the moment before you pay, leave, or miss an option",
 ] as const;
 
 type UrgentBoostButtonProps = {
@@ -106,14 +106,14 @@ export function UrgentBoostButton({
     <div className="border-t border-line px-4 py-3">
       <div className="flex items-stretch gap-2">
         <button
-          className="inline-flex h-10 min-w-0 flex-1 items-center justify-center rounded-md border border-line bg-background text-sm font-semibold text-foreground hover:bg-foreground/5 disabled:opacity-60"
+          className="inline-flex min-h-12 min-w-0 flex-1 items-center justify-center rounded-md border border-line bg-background text-base font-semibold text-foreground hover:bg-foreground/5 disabled:opacity-60"
           disabled={loading}
           onClick={() => {
             void startBoost();
           }}
           type="button"
         >
-          {loading ? "Opening checkout..." : "Boost this request"}
+          {loading ? "Opening checkout..." : "Boost for faster proof"}
         </button>
 
         <div
@@ -125,7 +125,7 @@ export function UrgentBoostButton({
             aria-describedby={infoOpen ? infoId : undefined}
             aria-expanded={infoOpen}
             aria-label="What does boost include?"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-line bg-background text-muted transition hover:bg-foreground/5 hover:text-foreground"
+            className="inline-flex size-12 items-center justify-center rounded-md border border-line bg-background text-muted transition hover:bg-foreground/5 hover:text-foreground"
             onClick={() => setInfoOpen((open) => !open)}
             type="button"
           >

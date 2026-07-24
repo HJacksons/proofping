@@ -9,6 +9,7 @@ import { canViewOwnedProofRequest } from "@/lib/proof-requests/access";
 import { ProofRequestForbiddenError } from "@/lib/proof-requests/errors";
 import {
   DASHBOARD_REQUESTS_PAGE_SIZE,
+  NEARBY_REQUESTS_PAGE_SIZE,
   paginateByCursor,
   REPLIES_PAGE_SIZE,
   type PaginatedResult,
@@ -70,6 +71,7 @@ type ListDiscoverableProofRequestsOptions = {
   limit?: number;
   cursor?: string | null;
   location?: string | null;
+  createdAfter?: Date | null;
 };
 
 type GetPublicProofRequestOptions = {
@@ -234,9 +236,10 @@ export async function listDiscoverableProofRequests(
 ): Promise<PaginatedResult<ProofRequestDTO>> {
   const authUser = await getCurrentUser();
   const viewerUserId = authUser?.id ?? null;
-  const limit = options.limit ?? DASHBOARD_REQUESTS_PAGE_SIZE;
+  const limit = options.limit ?? NEARBY_REQUESTS_PAGE_SIZE;
   const cursor = options.cursor ?? undefined;
   const location = options.location?.trim();
+  const createdAfter = options.createdAfter ?? null;
 
   const requests = await prisma.proofRequest.findMany({
     where: {
@@ -249,6 +252,13 @@ export async function listDiscoverableProofRequests(
             locationHint: {
               contains: location,
               mode: "insensitive",
+            },
+          }
+        : {}),
+      ...(createdAfter
+        ? {
+            createdAt: {
+              gt: createdAfter,
             },
           }
         : {}),

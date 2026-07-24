@@ -58,16 +58,18 @@ enum PaymentStatus {
 }
 
 model User {
-  id              String         @id @default(cuid())
-  email           String         @unique
-  role            UserRole       @default(REQUESTER)
-  isAdultVerified Boolean        @default(false)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  proofRequests   ProofRequest[]
-  authSessions    AuthSession[]
-  forwards        ProofRequestForward[]
-  payments        Payment[]
+  id                   String         @id @default(cuid())
+  email                String         @unique
+  role                 UserRole       @default(REQUESTER)
+  isAdultVerified      Boolean        @default(false)
+  nearbyAlertsEnabled  Boolean        @default(false)
+  nearbyAlertsLocation String?        @db.VarChar(160)
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  proofRequests        ProofRequest[]
+  authSessions         AuthSession[]
+  forwards             ProofRequestForward[]
+  payments             Payment[]
 }
 
 model AuthSession {
@@ -178,16 +180,19 @@ model Payment {
   @@index([userId, createdAt])
 }
 
-/// Privacy-safe page views: path + anonymous visitor hash only. No IPs or emails.
+/// Privacy-safe page views: path + anonymous visitor hash + coarse country.
+/// No IPs or emails are stored.
 model SitePageView {
   id              String   @id @default(cuid())
   path            String   @db.VarChar(512)
   referrerHost    String?  @db.VarChar(255)
   visitorKeyHash  String   @db.VarChar(64)
+  countryCode     String?  @db.VarChar(2)
   isBot           Boolean  @default(false)
   createdAt       DateTime @default(now())
 
   @@index([createdAt])
   @@index([path, createdAt])
   @@index([visitorKeyHash, createdAt])
+  @@index([countryCode, createdAt])
 }

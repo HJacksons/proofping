@@ -26,6 +26,20 @@ const envSchema = z.object({
   STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
   OPENAI_API_KEY: z.string().min(1).optional(),
   OPENAI_MODEL: z.string().min(1).default("gpt-4o-mini"),
+  ADMIN_EMAIL: z.preprocess(
+    (value) => {
+      if (value === "" || value == null) return undefined;
+      return String(value).trim().replace(/^["']+|["']+$/g, "");
+    },
+    z.string().optional(),
+  ),
+  ADMIN_EMAILS: z.preprocess(
+    (value) => {
+      if (value === "" || value == null) return undefined;
+      return String(value).trim().replace(/^["']+|["']+$/g, "");
+    },
+    z.string().optional(),
+  ),
 });
 
 export const env = envSchema.parse({
@@ -43,6 +57,8 @@ export const env = envSchema.parse({
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   OPENAI_MODEL: process.env.OPENAI_MODEL,
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+  ADMIN_EMAILS: process.env.ADMIN_EMAILS,
 });
 
 export type AppEnv = z.infer<typeof envSchema>;

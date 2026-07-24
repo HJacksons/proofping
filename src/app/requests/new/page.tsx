@@ -21,11 +21,11 @@ export default async function NewProofRequestPage() {
     <SiteShell width="narrow">
       <div className="grid gap-1 text-center sm:text-left">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          What do you need checked?
+          What do you need checked before you go?
         </h1>
         <p className="text-sm leading-6 text-muted">
-          Create one private helper link. Send it to someone nearby, then use the
-          result card to decide before you pay.
+          Queues, open/closed, printers, markets, events — or a listing before
+          you pay. Ask free. Boost when you need proof fast.
         </p>
       </div>
 

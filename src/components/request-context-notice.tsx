@@ -18,9 +18,9 @@ export function RequestContextNotice({
       <div className="rounded-lg border border-amber-200 bg-warn-soft px-4 py-3 text-sm leading-6 text-amber-950">
         <p className="font-semibold">Add what helpers need to check</p>
         <p className="mt-1">
-          This request has no photos or listing link yet. For a listing check,
-          add the listing URL, attach screenshots, and include the address or
-          neighborhood so someone there can verify the right place.
+          No photos or link yet. Add a clear place, what to look for (queue,
+          door, printer, listing), and any URL or screenshots so someone there
+          can verify the right thing.
         </p>
       </div>
     );
@@ -32,8 +32,8 @@ export function RequestContextNotice({
         Limited detail from the requester
       </p>
       <p className="mt-1">
-        No listing photos or link were attached. You can only share general
-        area knowledge or say you cannot confirm this specific place.
+        No photos or link were attached. Share only what you can actually see
+        or know — or say you can’t confirm this specific ask.
       </p>
     </div>
   );

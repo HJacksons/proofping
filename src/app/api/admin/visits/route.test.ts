@@ -60,8 +60,17 @@ describe("GET /api/admin/visits", () => {
       humanViews: 2,
       botViews: 0,
       topPaths: [{ path: "/", views: 2 }],
+      topCountries: [
+        {
+          countryCode: "US",
+          countryName: "United States",
+          views: 2,
+          uniqueVisitors: 1,
+        },
+      ],
       viewsByDay: [],
       recent: [],
+      note: "Country is estimated from the connection.",
     });
 
     const { GET } = await import("@/app/api/admin/visits/route");
@@ -78,8 +87,17 @@ describe("GET /api/admin/visits", () => {
         humanViews: 2,
         botViews: 0,
         topPaths: [{ path: "/", views: 2 }],
+        topCountries: [
+          {
+            countryCode: "US",
+            countryName: "United States",
+            views: 2,
+            uniqueVisitors: 1,
+          },
+        ],
         viewsByDay: [],
         recent: [],
+        note: "Country is estimated from the connection.",
       },
     });
     expect(getSiteVisitStats).toHaveBeenCalledWith(14);

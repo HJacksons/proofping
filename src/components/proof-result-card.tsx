@@ -1,12 +1,18 @@
+import type { AskIntent } from "@/lib/proof-requests/ask-intent";
 import type { ProofReplySummary } from "@/lib/proof-replies/summary";
 
 type ProofResultCardProps = {
   summary: ProofReplySummary;
+  /** Shapes caution/confirm copy for deal vs right-now asks. */
+  intent?: AskIntent;
 };
 
-export function ProofResultCard({ summary }: ProofResultCardProps) {
+export function ProofResultCard({
+  summary,
+  intent = "general",
+}: ProofResultCardProps) {
   const tone = getResultTone(summary);
-  const result = resultCopy[tone];
+  const result = getResultCopy(tone, intent);
   const stats = [
     { label: "Confirmed", value: summary.confirmed },
     { label: "Suspicious", value: summary.suspicious },
@@ -19,7 +25,7 @@ export function ProofResultCard({ summary }: ProofResultCardProps) {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
-              ProofPing check
+              Proof card
             </p>
             <h2 className={`mt-2 text-2xl font-bold leading-tight ${result.text}`}>
               {summary.resultLabel}
@@ -45,8 +51,10 @@ export function ProofResultCard({ summary }: ProofResultCardProps) {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line bg-surface/75 px-4 py-3 text-xs font-medium text-muted sm:px-5">
-        <span>{summary.total} human {summary.total === 1 ? "reply" : "replies"}</span>
-        <span>Real checks before money changes hands</span>
+        <span>
+          {summary.total} human {summary.total === 1 ? "reply" : "replies"}
+        </span>
+        <span>{result.footer}</span>
       </div>
     </section>
   );
@@ -70,11 +78,19 @@ function getResultTone(summary: ProofReplySummary): ResultTone {
   return "mixed";
 }
 
-const resultCopy: Record<
+function getResultCopy(tone: ResultTone, intent: AskIntent) {
+  const styles = resultStyles[tone];
+
+  return {
+    ...styles,
+    ...resultMessages[tone][intent],
+  };
+}
+
+const resultStyles: Record<
   ResultTone,
   {
     status: string;
-    description: string;
     bg: string;
     border: string;
     text: string;
@@ -83,26 +99,20 @@ const resultCopy: Record<
 > = {
   waiting: {
     status: "Waiting",
-    description:
-      "Share the helper link with someone local or someone who knows the seller. Their replies will build this card.",
     bg: "bg-background",
     border: "border-line",
     text: "text-foreground",
     pill: "border-line bg-surface text-muted",
   },
   trusted: {
-    status: "Verified signal",
-    description:
-      "Multiple people confirmed this and nobody flagged a concern. Still use judgment before paying.",
+    status: "Strong signal",
     bg: "bg-accent-soft",
     border: "border-accent/20",
     text: "text-accent-strong",
     pill: "border-accent/20 bg-surface text-accent-strong",
   },
   caution: {
-    status: "Suspicious",
-    description:
-      "At least one helper flagged a risk. Pause before sending money and ask for stronger proof.",
+    status: "Flagged",
     bg: "bg-warn-soft",
     border: "border-amber-200",
     text: "text-amber-950",
@@ -110,11 +120,83 @@ const resultCopy: Record<
   },
   mixed: {
     status: "Needs more proof",
-    description:
-      "You have an early signal, but not enough agreement yet. Share the link with one or two more people.",
     bg: "bg-background",
     border: "border-line",
     text: "text-foreground",
     pill: "border-line bg-surface text-foreground",
+  },
+};
+
+const resultMessages: Record<
+  ResultTone,
+  Record<AskIntent, { description: string; footer: string }>
+> = {
+  waiting: {
+    deal: {
+      description:
+        "Share the helper link with someone local or someone who knows the seller. Their replies will build this card.",
+      footer: "Human proof before you pay or commit",
+    },
+    right_now: {
+      description:
+        "Share with someone who’s already there — queue, door, printer, stall. Their replies will build this card.",
+      footer: "Human proof before you go or wait",
+    },
+    general: {
+      description:
+        "Share the helper link with someone who’s there or who knows the place. Their replies will build this card.",
+      footer: "Human proof before you decide",
+    },
+  },
+  trusted: {
+    deal: {
+      description:
+        "Multiple people confirmed this and nobody flagged a concern. Still use your judgment before you pay or sign.",
+      footer: "Human proof before you pay or commit",
+    },
+    right_now: {
+      description:
+        "Multiple people confirmed this and nobody flagged a concern. Still double-check if the situation can change by the minute.",
+      footer: "Human proof before you go or wait",
+    },
+    general: {
+      description:
+        "Multiple people confirmed this and nobody flagged a concern. Still use your judgment before you pay, go, or commit.",
+      footer: "Human proof before you decide",
+    },
+  },
+  caution: {
+    deal: {
+      description:
+        "At least one helper flagged a risk. Pause before sending money and ask for stronger proof.",
+      footer: "Human proof before you pay or commit",
+    },
+    right_now: {
+      description:
+        "At least one helper flagged a problem. Pause before you leave, wait, or change plans — ask for a clearer check.",
+      footer: "Human proof before you go or wait",
+    },
+    general: {
+      description:
+        "At least one helper flagged a risk. Pause before you pay, go, or commit — ask for stronger proof.",
+      footer: "Human proof before you decide",
+    },
+  },
+  mixed: {
+    deal: {
+      description:
+        "You have an early signal, but not enough agreement yet. Share the link with one or two more people before you pay.",
+      footer: "Human proof before you pay or commit",
+    },
+    right_now: {
+      description:
+        "You have an early signal, but not enough agreement yet. Ask one more person who’s there before you move.",
+      footer: "Human proof before you go or wait",
+    },
+    general: {
+      description:
+        "You have an early signal, but not enough agreement yet. Share the link with one or two more people.",
+      footer: "Human proof before you decide",
+    },
   },
 };

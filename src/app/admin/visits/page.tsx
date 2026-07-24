@@ -32,7 +32,7 @@ export default async function AdminVisitsPage() {
           Site visits
         </h1>
         <p className="text-sm leading-6 text-muted">
-          Anonymous page views only. No IPs or emails are stored.
+          Page views with network country. IP and email are not stored.
         </p>
       </div>
 
@@ -53,6 +53,38 @@ export default async function AdminVisitsPage() {
             <StatCard label="Human views" value={String(stats.humanViews)} />
             <StatCard label="Bot views" value={String(stats.botViews)} />
           </div>
+
+          <FeedCard>
+            <FeedCardBody>
+              <h2 className="text-lg font-semibold">Countries</h2>
+              <p className="mt-1 text-sm text-muted">{stats.note}</p>
+              {stats.topCountries.length === 0 ? (
+                <p className="mt-2 text-sm text-muted">
+                  No country on recorded visits yet. Open a few public pages,
+                  then refresh. Localhost now resolves via network egress.
+                </p>
+              ) : (
+                <div className="mt-3">
+                  <ExpandableList initialCount={12}>
+                    {stats.topCountries.map((item) => (
+                      <li
+                        className="flex flex-wrap items-baseline justify-between gap-2 text-sm"
+                        key={item.countryCode}
+                      >
+                        <span className="font-medium">
+                          {item.countryName}{" "}
+                          <span className="text-muted">({item.countryCode})</span>
+                        </span>
+                        <span className="text-xs text-muted">
+                          {item.uniqueVisitors} unique · {item.views} views
+                        </span>
+                      </li>
+                    ))}
+                  </ExpandableList>
+                </div>
+              )}
+            </FeedCardBody>
+          </FeedCard>
 
           <FeedCard>
             <FeedCardBody>
@@ -109,6 +141,9 @@ export default async function AdminVisitsPage() {
                         <p className="font-medium">{visit.path}</p>
                         <p className="mt-1 text-xs text-muted">
                           <ProofTimestamp value={visit.createdAt} />
+                          {visit.countryName
+                            ? ` · ${visit.countryName}`
+                            : ""}
                           {visit.referrerHost
                             ? ` · from ${visit.referrerHost}`
                             : ""}

@@ -37,19 +37,22 @@ const initialState: ReplySubmitState = {
 };
 
 const quickPickClass = (isSelected: boolean, verdict: string) => {
+  const base =
+    "grid min-h-14 gap-1.5 rounded-md border px-3 py-3 text-left text-sm font-semibold transition active:scale-[0.99]";
+
   if (!isSelected) {
-    return "grid gap-2 rounded-md border border-line bg-background px-3 py-3 text-left text-sm font-semibold text-muted transition hover:border-accent/30 hover:bg-accent-soft hover:text-foreground";
+    return `${base} border-line bg-background text-muted hover:border-accent/30 hover:bg-accent-soft hover:text-foreground`;
   }
 
   if (verdict === "CONFIRMED") {
-    return "grid gap-2 rounded-md border border-accent/30 bg-accent-soft px-3 py-3 text-left text-sm font-semibold text-accent-strong";
+    return `${base} border-accent/30 bg-accent-soft text-accent-strong`;
   }
 
   if (verdict === "SUSPICIOUS") {
-    return "grid gap-2 rounded-md border border-amber-200 bg-warn-soft px-3 py-3 text-left text-sm font-semibold text-amber-900";
+    return `${base} border-amber-200 bg-warn-soft text-amber-900`;
   }
 
-  return "grid gap-2 rounded-md border border-line bg-foreground/5 px-3 py-3 text-left text-sm font-semibold text-foreground";
+  return `${base} border-line bg-foreground/5 text-foreground`;
 };
 
 export function CreateReplyForm({
@@ -149,14 +152,14 @@ export function CreateReplyForm({
       {!showCustomReply ? (
         <>
           <div className="grid gap-2">
-            <span className="text-sm font-semibold">Your answer</span>
+            <span className="text-sm font-semibold">Your proof</span>
             <span className="text-sm text-muted">
-              Takes about 20 seconds. Pick the closest signal, add a note only if
-              it helps.
+              Takes about 20 seconds. Pick the closest signal — add a note or
+              photo if it helps.
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-1 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {proofEvidenceOptions.map((option) => {
               const isSelected = selectedEvidenceId === option.id;
 
@@ -181,13 +184,13 @@ export function CreateReplyForm({
               <span className="text-sm font-semibold">Note</span>
               <span className="text-sm text-muted">Optional extra detail.</span>
               <input
-                className="min-h-10 w-full rounded-md border border-line bg-background px-3 text-sm outline-none focus:border-accent"
+                className="min-h-12 w-full rounded-md border border-line bg-background px-4 text-base outline-none focus:border-accent"
                 maxLength={200}
                 onChange={(event) => setNote(event.target.value)}
                 placeholder={
                   hasRequestEvidence
                     ? "e.g. Same sign as the photos"
-                    : "e.g. I know Denver, but need photos or an address to check this listing"
+                    : "e.g. I know the place, but need a photo to confirm"
                 }
                 value={note}
               />
@@ -199,7 +202,7 @@ export function CreateReplyForm({
           <div className="grid gap-1">
             <p className="text-sm font-semibold">Custom reply</p>
           </div>
-          <div className="flex flex-wrap gap-1">
+          <div className="grid grid-cols-3 gap-2">
             {proofReplyVerdicts.map((verdict) => (
               <button
                 className={quickPickClass(
@@ -217,7 +220,7 @@ export function CreateReplyForm({
           <label className="grid gap-1.5">
             <span className="text-sm font-semibold">Reply</span>
             <textarea
-              className="min-h-24 w-full rounded-md border border-line bg-background px-3 py-2 text-sm leading-6 outline-none focus:border-accent"
+              className="min-h-28 w-full rounded-md border border-line bg-background px-4 py-3 text-base leading-6 outline-none focus:border-accent"
               maxLength={500}
               minLength={8}
               onChange={(event) => setCustomBody(event.target.value)}
@@ -237,9 +240,9 @@ export function CreateReplyForm({
         onChange={setAttachments}
       />
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="sticky-above-nav sticky z-10 -mx-1 grid gap-2 border-t border-line bg-surface/95 p-3 backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
         <button
-          className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-5 text-sm font-semibold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 text-base font-semibold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           disabled={
             state.status === "submitting" ||
             (!showCustomReply && !selectedEvidence) ||
@@ -251,7 +254,7 @@ export function CreateReplyForm({
         </button>
 
         <button
-          className="text-sm font-semibold text-accent-strong underline underline-offset-4"
+          className="min-h-11 text-sm font-semibold text-accent-strong underline underline-offset-4"
           onClick={() => {
             setShowCustomReply((current) => !current);
             setSelectedEvidenceId(null);

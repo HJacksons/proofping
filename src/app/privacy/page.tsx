@@ -26,7 +26,15 @@ export default function PrivacyPage() {
           <li>
             <span className="font-medium text-foreground">Email</span> — only
             to sign you in and send your magic link. Not sold, not shared, and
-            never shown on requests.
+            never shown on requests. Requesters may also get an email when a
+            proof card arrives.
+          </li>
+          <li>
+            <span className="font-medium text-foreground">
+              Place hints
+            </span>{" "}
+            — optional text you type on asks or nearby alerts (e.g. campus,
+            market, city). Not GPS tracking.
           </li>
           <li>
             <span className="font-medium text-foreground">
@@ -38,6 +46,11 @@ export default function PrivacyPage() {
             <span className="font-medium text-foreground">Payments</span> — if
             you donate or boost, Stripe handles the card. We keep only what we
             need for support.
+          </li>
+          <li>
+            <span className="font-medium text-foreground">Site analytics</span>{" "}
+            — anonymous page views for operators (paths and approximate
+            country from the connection; no IPs or emails in visit logs).
           </li>
         </ul>
       </section>
@@ -56,6 +69,15 @@ export default function PrivacyPage() {
         <p className="text-sm leading-7 text-muted sm:text-base">
           We use small cookies so sign-in works. No advertising trackers. No
           cookie pop-up wall.
+        </p>
+      </section>
+
+      <section className="grid gap-3">
+        <h2 className="text-xl font-semibold">Operators</h2>
+        <p className="text-sm leading-7 text-muted sm:text-base">
+          Platform operators can see accounts, alert watch places, and ask
+          location hints to run and improve the service. Public pages still
+          hide emails.
         </p>
       </section>
 

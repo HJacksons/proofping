@@ -17,7 +17,7 @@ export function IconAction({
 }: IconActionProps) {
   return (
     <button
-      className="inline-flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-semibold text-muted transition hover:bg-foreground/5 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+      className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-md px-3 py-3 text-sm font-semibold text-muted transition hover:bg-foreground/5 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
       disabled={disabled}
       onClick={onClick}
       type={type}

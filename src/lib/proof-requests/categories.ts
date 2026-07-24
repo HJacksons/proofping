@@ -2,6 +2,7 @@ export const proofRequestCategoryValues = [
   "APARTMENT_LISTING",
   "SELLER_OR_SHOP",
   "ADDRESS_CHECK",
+  "FACILITY_OR_QUEUE",
   "LOCAL_SITUATION",
   "DOCUMENT_OR_NOTICE",
   "OTHER",
@@ -22,14 +23,18 @@ export const proofRequestCategories = [
   },
   {
     value: proofRequestCategoryValues[3],
-    label: "Local situation",
+    label: "Printer, queue, room, access",
   },
   {
     value: proofRequestCategoryValues[4],
-    label: "Document or notice",
+    label: "Open / crowded / right now",
   },
   {
     value: proofRequestCategoryValues[5],
+    label: "Document or notice",
+  },
+  {
+    value: proofRequestCategoryValues[6],
     label: "Other",
   },
 ] as const;
@@ -42,3 +47,13 @@ export function getProofRequestCategoryLabel(category: string): string {
     "Other"
   );
 }
+
+/** Example asks shown on the create form (busy places + marketplace). */
+export const proofRequestExampleAsks = [
+  "How long is the queue at the west gate?",
+  "Is the beach parking full right now?",
+  "Is the library printer working?",
+  "Is this market stall actually open?",
+  "Is this Marketplace phone deal real?",
+  "Worth going, or pick another option?",
+] as const;

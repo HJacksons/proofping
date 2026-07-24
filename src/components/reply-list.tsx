@@ -81,7 +81,11 @@ export function ReplyList({
     return (
       <FeedCard>
         <FeedCardBody>
-          <p className="text-sm text-muted">No replies yet.</p>
+          <p className="text-sm font-medium">No proof cards yet</p>
+          <p className="mt-1 text-sm text-muted">
+            Share the helper link — or open it nearby so someone already there
+            can send the first proof.
+          </p>
         </FeedCardBody>
       </FeedCard>
     );
@@ -91,29 +95,42 @@ export function ReplyList({
     <div className="grid gap-2">
       {repliesTotal > replies.length ? (
         <p className="px-1 text-xs text-muted">
-          Showing {replies.length} of {repliesTotal} replies
+          Showing {replies.length} of {repliesTotal} proof cards
         </p>
-      ) : null}
+      ) : (
+        <p className="px-1 text-xs font-medium uppercase tracking-[0.12em] text-muted">
+          Proof cards
+        </p>
+      )}
 
       {replies.map((reply) => (
         <FeedCard key={reply.id}>
           <FeedCardBody>
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
-                <AnonymousDisplayName name={reply.displayName} />
-                <span aria-hidden="true" className="text-sm text-muted/70">
-                  ·
-                </span>
-                <span className="text-sm font-semibold text-accent-strong">
-                  {getProofReplyVerdictLabel(reply.verdict)}
-                </span>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                  Proof
+                </p>
+                <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
+                  <AnonymousDisplayName name={reply.displayName} />
+                  <span aria-hidden="true" className="text-sm text-muted/70">
+                    ·
+                  </span>
+                  <span className="text-sm font-semibold text-accent-strong">
+                    {getProofReplyVerdictLabel(reply.verdict)}
+                  </span>
+                </div>
               </div>
-              <ProofTimestamp className="text-xs text-muted" value={reply.createdAt} />
+              <ProofTimestamp
+                className="shrink-0 text-xs font-medium text-muted"
+                prefix="Proven"
+                value={reply.createdAt}
+              />
             </div>
             <p className="mt-2 text-sm leading-6">{reply.body}</p>
             {reply.evidence.length > 0 ? (
               <div className="mt-3">
-                <EvidenceGallery evidence={reply.evidence} title="Photos" />
+                <EvidenceGallery evidence={reply.evidence} title="Evidence" />
               </div>
             ) : null}
           </FeedCardBody>
@@ -122,7 +139,7 @@ export function ReplyList({
 
       <LoadMoreButton
         hasMore={hasMore}
-        label="Show older replies"
+        label="Show older proof cards"
         loading={loading}
         onClick={() => {
           void loadMore();

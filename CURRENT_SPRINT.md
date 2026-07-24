@@ -1,48 +1,50 @@
-# Current Sprint: Sprint 5 - Payments And AI Helpers
+# Current Sprint: Sprint 7 - NowProof Campus Wedge
 
 ## Goal
 
-Add optional monetization and backend-only AI assistance without exposing secrets to the browser.
+Reposition ProofPing around “what’s true right now” for dense places (campus first), while keeping verify-before-you-pay. Polish proof cards. No credits wallet and no SnapBounty camera flow yet.
 
 ## Deliverables
 
-- Stripe Checkout for optional donations (support ProofPing).
-- Stripe Checkout for per-request urgent boosts (optional, request-scoped).
-- Backend-only OpenAI helper to improve proof request wording before submit.
-- Clear disabled states when Stripe or OpenAI keys are not configured.
+- Landing / About / create examples for campus “right now” asks plus marketplace verify-before-you-pay.
+- Create form hints for printers, queues, open/closed, access, food, study spaces.
+- Reply / share surfaces read as **proof cards** with clear relative timestamps.
+- Help nearby empty and list copy that recruits helpers for unanswered asks.
+- Keep privacy rules: no public people ratings; rate answers only if added later.
 
 ## Rules
 
-- Never call Stripe or OpenAI from client components.
-- Validate payment and AI input with Zod at route boundaries.
-- Donations and boosts are optional. Core ask → share → reply flow stays free.
-- AI helpers suggest copy only. They do not auto-submit requests or replies.
-- No AI moderation auto-actions in this sprint. Suggestions only.
+- Copy and UX first. Do not add credits, payouts, or micropayments.
+- Do not build SnapBounty photo-circle compose in this sprint.
+- Do not add blast push notifications to all users.
+- Stay privacy-first: private link default; nearby is opt-in density.
+- No stalking, doxxing, or private-person hunting disguised as “lost item.”
 
 ## Explicitly Out Of Scope
 
-- Subscriptions or recurring billing.
-- Payouts to helpers.
-- Admin moderation dashboards.
-- Production webhook hardening beyond a basic handler stub.
-- Translation UI (can follow in a later sprint).
+- Internal credits wallet / unlock packs.
+- Contributor revenue split.
+- SnapBounty create mode.
+- Formal patent/trademark clearance (track separately before big brand claims).
+- City-wide “Google for now” marketing claims.
 
 ## Done When
 
 - `npm run lint` passes.
 - `npm run typecheck` passes.
 - `npm run test` passes.
-- `npm run prisma:validate` passes.
-- Requester can start a donation checkout when Stripe is configured.
-- Requester can boost an open request when urgent boost pricing is configured.
-- Requester can use “Improve wording” on the create form when OpenAI is configured.
-- Stripe webhook stub marks urgent boosts as paid.
-- Missing keys show honest UI instead of broken buttons.
+- Landing and create flow clearly support both “right now” and “verify before you pay.”
+- A reply looks like a proof card with an obvious time signal.
+- Help nearby copy makes unanswered asks feel like an opportunity to help.
 
 ## Manual Test Path
 
-1. Set `STRIPE_SECRET_KEY`, `STRIPE_PRICE_DONATION`, `STRIPE_PRICE_URGENT_BOOST`, `STRIPE_WEBHOOK_SECRET`, and `OPENAI_API_KEY` in `.env`.
-2. Create a request and try “Improve wording”.
-3. Start a donation from the footer and complete Stripe test checkout.
-4. Boost an open request, then send the webhook from Stripe CLI to `/api/payments/webhook`.
-5. Unset keys and confirm buttons stay hidden instead of breaking.
+1. Open `/` and confirm the dual story (right now + verify before you pay).
+2. Create a campus-style ask (“Is the library printer working?”) with a location.
+3. Reply with a verdict + note; confirm timestamp reads clearly.
+4. Open Help nearby for that location and confirm empty/list copy is inviting.
+5. Create a marketplace verify-before-you-pay ask and confirm that path still feels natural.
+
+## Plan Doc
+
+Full strategy: `docs/NOWPROOF_SPRINT_PLAN.md`

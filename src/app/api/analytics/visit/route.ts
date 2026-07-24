@@ -1,6 +1,7 @@
 import { ZodError } from "zod";
 
 import { recordSiteVisitSchema } from "@/lib/analytics/validation";
+import { resolveRequestCountryCode } from "@/lib/server/request-country";
 import { recordSiteVisit } from "@/lib/server/site-visits";
 
 export const dynamic = "force-dynamic";
@@ -9,10 +10,13 @@ export async function POST(request: Request) {
   try {
     const json = await request.json();
     const input = recordSiteVisitSchema.parse(json);
+    const countryCode = await resolveRequestCountryCode(request.headers);
+
     await recordSiteVisit({
       path: input.path,
       referrer: input.referrer,
       userAgent: request.headers.get("user-agent"),
+      countryCode,
     });
 
     return Response.json({ ok: true });

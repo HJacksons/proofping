@@ -30,7 +30,7 @@ describe("summarizeProofReplies", () => {
       confirmed: 1,
       suspicious: 1,
       unsure: 1,
-      resultLabel: "Be careful before paying",
+      resultLabel: "Be careful before you decide",
     });
   });
 
@@ -97,7 +97,7 @@ describe("buildReplySummariesByRequestId", () => {
     expect(summaries.get("req-2")).toMatchObject({
       total: 1,
       suspicious: 1,
-      resultLabel: "Be careful before paying",
+      resultLabel: "Be careful before you decide",
     });
   });
 });

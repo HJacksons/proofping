@@ -4,9 +4,13 @@ import { useId, useRef, useState } from "react";
 import Link from "next/link";
 
 import { AttachmentPicker } from "@/components/attachment-picker";
+import { PlaceAutocomplete } from "@/components/place-autocomplete";
 import { ShareProofButton } from "@/components/share-proof-button";
 import { MAX_EVIDENCE_FILES_PER_REQUEST } from "@/lib/evidence/validation";
-import { proofRequestCategories } from "@/lib/proof-requests/categories";
+import {
+  proofRequestCategories,
+  proofRequestExampleAsks,
+} from "@/lib/proof-requests/categories";
 
 type SubmitState =
   | {
@@ -42,25 +46,21 @@ const initialState: SubmitState = {
 };
 
 function buildRequestBody(input: {
-  title: string;
-  locationHint: string;
   details: string;
   listingUrl: string;
 }) {
-  const parts = [`I need help verifying: ${input.title.trim()}`];
-
-  if (input.locationHint.trim()) {
-    parts.push(`Location: ${input.locationHint.trim()}`);
-  }
-
-  if (input.listingUrl.trim()) {
-    parts.push(`Link: ${input.listingUrl.trim()}`);
-  }
+  const parts: string[] = [];
 
   if (input.details.trim()) {
     parts.push(input.details.trim());
-  } else {
-    parts.push("Please check what you can and reply honestly.");
+  }
+
+  if (input.listingUrl.trim()) {
+    parts.push(input.listingUrl.trim());
+  }
+
+  if (parts.length === 0) {
+    return "Please check what you can and reply honestly.";
   }
 
   return parts.join("\n\n");
@@ -77,9 +77,9 @@ export function CreateRequestForm({
   const [improving, setImproving] = useState(false);
   const [improveError, setImproveError] = useState<string | null>(null);
   const [showAiConfirm, setShowAiConfirm] = useState(false);
+  const [locationHint, setLocationHint] = useState("");
   const titleFieldId = useId();
   const titleRef = useRef<HTMLInputElement>(null);
-  const locationRef = useRef<HTMLInputElement>(null);
   const detailsRef = useRef<HTMLTextAreaElement>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -88,14 +88,12 @@ export function CreateRequestForm({
     setState({ status: "submitting", message: null, requestId: null, replyShareUrl: null });
 
     const formData = new FormData(form);
-    const title = String(formData.get("title") ?? "").trim();
-    const locationHint = String(formData.get("locationHint") ?? "").trim();
     const details = String(formData.get("details") ?? "").trim();
     const listingUrl = String(formData.get("listingUrl") ?? "").trim();
     const category = String(formData.get("category") ?? "OTHER");
     const visibility = String(formData.get("visibility") ?? "PRIVATE_LINK");
 
-    formData.set("body", buildRequestBody({ title, locationHint, details, listingUrl }));
+    formData.set("body", buildRequestBody({ details, listingUrl }));
     formData.set("category", category);
     formData.set("visibility", visibility);
     attachments.forEach((file) => {
@@ -121,9 +119,10 @@ export function CreateRequestForm({
     form.reset();
     setAttachments([]);
     setShowMore(false);
+    setLocationHint("");
     setState({
       status: "success",
-      message: "Share link ready — send it to someone local or someone who knows the seller.",
+      message: "Share link ready — send it to someone who’s there or who knows the place.",
       requestId: payload.request.id,
       replyShareUrl: payload.request.replyShareUrl ?? null,
     });
@@ -152,7 +151,7 @@ export function CreateRequestForm({
         },
         body: JSON.stringify({
           title,
-          locationHint: locationRef.current?.value.trim() || undefined,
+          locationHint: locationHint.trim() || undefined,
           details: detailsRef.current?.value.trim() || undefined,
         }),
       });
@@ -211,13 +210,16 @@ export function CreateRequestForm({
         <p className="font-semibold">How ProofPing works</p>
         <div className="grid gap-2 text-muted sm:grid-cols-3">
           <p>
-            <span className="font-semibold text-foreground">1. Create</span> one clear check.
+            <span className="font-semibold text-foreground">1. Ask</span> before
+            you pay, go, or miss a better option.
           </p>
           <p>
-            <span className="font-semibold text-foreground">2. Share</span> the helper link.
+            <span className="font-semibold text-foreground">2. Share</span> a
+            private link, or open it to nearby helpers.
           </p>
           <p>
-            <span className="font-semibold text-foreground">3. Decide</span> from the proof card.
+            <span className="font-semibold text-foreground">3. Decide</span> from
+            a timestamped proof card.
           </p>
         </div>
       </div>
@@ -230,7 +232,7 @@ export function CreateRequestForm({
           <button
             aria-disabled={improving || state.status === "submitting"}
             aria-label="Improve wording with AI"
-            className="inline-flex size-9 items-center justify-center rounded-md border border-line bg-background text-accent-strong transition hover:border-accent/40 hover:bg-accent-soft disabled:opacity-60 aria-disabled:opacity-60"
+            className="inline-flex size-11 items-center justify-center rounded-md border border-line bg-background text-accent-strong transition hover:border-accent/40 hover:bg-accent-soft disabled:opacity-60 aria-disabled:opacity-60"
             onClick={handleAiAssistClick}
             title="Improve wording with AI"
             type="button"
@@ -244,10 +246,28 @@ export function CreateRequestForm({
           maxLength={120}
           minLength={8}
           name="title"
-          placeholder="Is this apartment listing real?"
+          placeholder="Is the library printer working?"
           ref={titleRef}
           required
         />
+        <div className="chip-scroll pt-1">
+          {proofRequestExampleAsks.map((example) => (
+            <button
+              className="shrink-0 snap-start rounded-md border border-line bg-surface px-3 py-2.5 text-left text-sm font-medium text-muted transition hover:border-accent/40 hover:text-foreground active:scale-[0.99]"
+              key={example}
+              onClick={() => {
+                if (titleRef.current) {
+                  titleRef.current.value = example;
+                  titleRef.current.focus();
+                }
+                setImproveError(null);
+              }}
+              type="button"
+            >
+              {example}
+            </button>
+          ))}
+        </div>
         {improveError ? (
           <p className="text-xs font-medium text-amber-800" role="alert">
             {improveError}
@@ -278,16 +298,16 @@ export function CreateRequestForm({
               </div>
             </div>
 
-            <div className="mt-4 flex justify-end gap-2">
+            <div className="mt-4 grid grid-cols-2 gap-2">
               <button
-                className="rounded-md px-3 py-2 text-sm font-semibold text-muted hover:bg-foreground/5 hover:text-foreground"
+                className="min-h-12 rounded-md px-3 text-sm font-semibold text-muted hover:bg-foreground/5 hover:text-foreground"
                 onClick={() => setShowAiConfirm(false)}
                 type="button"
               >
                 Keep as is
               </button>
               <button
-                className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-strong"
+                className="min-h-12 rounded-md bg-accent px-4 text-sm font-semibold text-white hover:bg-accent-strong"
                 onClick={confirmAiImprove}
                 type="button"
               >
@@ -298,24 +318,22 @@ export function CreateRequestForm({
         </div>
       ) : null}
 
-      <label className="grid gap-1.5">
-        <span className="text-sm font-semibold">Where?</span>
-        <input
-          className="min-h-11 rounded-md border border-line bg-background px-4 text-base outline-none focus:border-accent"
-          maxLength={160}
-          name="locationHint"
-          placeholder="City or neighborhood (optional)"
-          ref={locationRef}
-        />
-      </label>
+      <PlaceAutocomplete
+        helpText="Pick a known place so helpers nearby can find your ask."
+        label="Where?"
+        name="locationHint"
+        onChange={setLocationHint}
+        placeholder="Campus library, downtown cafe, neighborhood..."
+        value={locationHint}
+      />
 
       <fieldset className="grid gap-2">
         <legend className="text-sm font-semibold">Who can help?</legend>
         <div className="grid gap-2 sm:grid-cols-2">
-          <label className="grid cursor-pointer gap-1 rounded-md border border-line bg-background px-4 py-3 text-sm has-[:checked]:border-accent/40 has-[:checked]:bg-accent-soft">
+          <label className="grid min-h-14 cursor-pointer gap-1 rounded-md border border-line bg-background px-4 py-3.5 text-sm has-checked:border-accent/40 has-checked:bg-accent-soft">
             <span className="flex items-center gap-2 font-semibold">
               <input
-                className="size-4 accent-[var(--accent)]"
+                className="size-5 accent-accent"
                 defaultChecked
                 name="visibility"
                 type="radio"
@@ -328,10 +346,10 @@ export function CreateRequestForm({
             </span>
           </label>
 
-          <label className="grid cursor-pointer gap-1 rounded-md border border-line bg-background px-4 py-3 text-sm has-[:checked]:border-accent/40 has-[:checked]:bg-accent-soft">
+          <label className="grid min-h-14 cursor-pointer gap-1 rounded-md border border-line bg-background px-4 py-3.5 text-sm has-checked:border-accent/40 has-checked:bg-accent-soft">
             <span className="flex items-center gap-2 font-semibold">
               <input
-                className="size-4 accent-[var(--accent)]"
+                className="size-5 accent-accent"
                 name="visibility"
                 type="radio"
                 value="LOCAL_DISCOVERY"
@@ -339,7 +357,7 @@ export function CreateRequestForm({
               Help nearby
             </span>
             <span className="leading-5 text-muted">
-              People browsing your city or neighborhood can find and reply.
+              People already there can help — and learn from your ask too.
             </span>
           </label>
         </div>
@@ -351,13 +369,13 @@ export function CreateRequestForm({
           className="min-h-24 rounded-md border border-line bg-background px-4 py-3 text-base leading-6 outline-none focus:border-accent"
           maxLength={2000}
           name="details"
-          placeholder="Optional — address, price, or what would count as proof."
+          placeholder="Optional — which printer, which door, listing link, or what counts as proof."
           ref={detailsRef}
         />
       </label>
 
       <button
-        className="inline-flex w-fit text-sm font-semibold text-muted hover:text-foreground"
+        className="inline-flex min-h-11 w-fit items-center text-sm font-semibold text-muted hover:text-foreground"
         onClick={() => setShowMore((current) => !current)}
         type="button"
       >
@@ -369,7 +387,7 @@ export function CreateRequestForm({
           <label className="grid gap-1.5">
             <span className="text-sm font-semibold">Category</span>
             <select
-              className="min-h-11 rounded-md border border-line bg-background px-4 text-base outline-none focus:border-accent"
+              className="min-h-12 rounded-md border border-line bg-background px-4 text-base outline-none focus:border-accent"
               defaultValue="OTHER"
               name="category"
             >
@@ -384,7 +402,7 @@ export function CreateRequestForm({
           <label className="grid gap-1.5">
             <span className="text-sm font-semibold">Link</span>
             <input
-              className="min-h-11 rounded-md border border-line bg-background px-4 text-base outline-none focus:border-accent"
+              className="min-h-12 rounded-md border border-line bg-background px-4 text-base outline-none focus:border-accent"
               maxLength={2048}
               name="listingUrl"
               placeholder="Listing or shop URL (optional)"
@@ -404,13 +422,15 @@ export function CreateRequestForm({
         <input name="category" type="hidden" value="OTHER" />
       )}
 
-      <button
-        className="inline-flex h-11 w-full items-center justify-center rounded-md bg-accent text-sm font-semibold text-white transition-colors hover:bg-accent-strong hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-8"
-        disabled={state.status === "submitting"}
-        type="submit"
-      >
-        {state.status === "submitting" ? "Creating..." : "Create helper link"}
-      </button>
+      <div className="sticky-above-nav sticky z-10 -mx-1 border-t border-line bg-surface/95 p-3 backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+        <button
+          className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent text-base font-semibold text-white transition-colors hover:bg-accent-strong hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-8"
+          disabled={state.status === "submitting"}
+          type="submit"
+        >
+          {state.status === "submitting" ? "Creating..." : "Create helper link"}
+        </button>
+      </div>
 
       <p className="text-xs leading-5 text-muted">
         Safety rule: ask for public, lawful checks only. Do not request stalking,

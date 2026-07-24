@@ -107,7 +107,7 @@ function getProofResultLabel(summary: Omit<ProofReplySummary, "resultLabel">) {
   }
 
   if (summary.suspicious > 0) {
-    return "Be careful before paying";
+    return "Be careful before you decide";
   }
 
   if (summary.confirmed >= 2 && summary.unsure === 0) {
